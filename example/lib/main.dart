@@ -39,6 +39,26 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         title: Text(widget.title),
       ),
+      body: Container(
+        alignment: Alignment.center,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            NumericIntry(
+              min: 0,
+              max: 100,
+              divisions: 5,
+              postfix: "%",
+              value: _counter,
+              onChanged: (int value) {
+                setState(() {
+                  _counter = value;
+                });
+              },
+            ),
+          ],
+            ),
+            ),
     );
   }
 }
