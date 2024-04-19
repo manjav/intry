@@ -1,19 +1,44 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+/// Intry state enum for the numeric input widget.
 enum IntryState {
   normal,
   editting,
 }
 
-class NumericIntry extends StatefulWidget {
-  final int? min;
-  final int? max;
-  final int value;
-  final int divisions;
-  final String postfix;
-  final Function(int value) onChanged;
+/// A library for creating a numeric input widget.
+///
+/// The [NumericIntry] widget provides a numeric input field with
+/// configurable minimum and maximum values, initial value,
+/// number of divisions, and postfix. It also provides a callback
+/// function that gets called when the value changes.
+///
+/// To use this library, import `package:intry_numeric/intry_numeric.dart`.
 
+class NumericIntry extends StatefulWidget {
+  /// The minimum value for the numeric input.
+  final int? min;
+
+  /// The maximum value for the numeric input.
+  final int? max;
+
+  /// The initial value for the numeric input.
+  final int value;
+
+  /// The number of divisions for the numeric input.
+  final int divisions;
+
+  /// The postfix for the numeric input.
+  final String postfix;
+
+  /// The callback function that gets called when the value changes.
+  final ValueChanged<int> onChanged;
+
+  /// Creates a widget for a numeric input with the given configurations.
+  ///
+  /// The [value] argument must not be null.
+  /// The [onChanged] argument must not be null.
   const NumericIntry({
     super.key,
     this.min,
@@ -36,7 +61,23 @@ class _NumericIntryState extends State<NumericIntry> {
   int _startValue = 0;
 
   @override
+
+  /// Builds the widget tree for this state.
+  ///
+  /// This method builds a widget tree that consists of a `TapRegion` widget
+  /// wrapping a `MouseRegion` widget wrapping a `Container` widget. The
+  /// `TapRegion` widget listens for taps outside of itself and calls `_setText`
+  /// and `_foucusOut` if the state is set to `IntryState.editting`. The
+  /// `MouseRegion` widget sets the cursor based on the state and the `Container`
+  /// widget contains a child built by `_textBuilder`. The `Container` widget
+  /// is aligned to the center, has a tight size of 72 by 36 logical pixels, and
+  /// has a border with a width of 1 pixel and a color of `Colors.black12`
+  /// surrounding a rounded border with a radius of 3 pixels.
+  ///
+  /// Returns a `Widget` that represents the widget tree built in this method.
+  @override
   Widget build(BuildContext context) {
+    // Builds the widget tree
     return TapRegion(
       onTapOutside: (e) {
         if (state == IntryState.editting) {
@@ -54,31 +95,51 @@ class _NumericIntryState extends State<NumericIntry> {
               border: Border.all(width: 1, color: Colors.black12),
               borderRadius: BorderRadius.circular(3),
             ),
-            child: _textBuilder(),
+            child: _textBuilder(), // Builds the child of the Container
           ),
         ),
       ),
     );
   }
 
+  /// Wraps the child with a GestureDetector to detect gestures.
+  ///
+  /// If the state is set to IntryState.editting, it returns a
+  /// `SizedBox` widget wrapping the child. Otherwise, it returns a
+  /// `GestureDetector` widget that listens for double taps to call
+  /// `_foucusIn` and horizontal drag start and update events to call
+  /// `_slideValue`. The child parameter represents the child widget.
+  ///
+  /// Parameters:
+  ///   - child: The child widget to wrap with a GestureDetector.
   Widget _gestureDetector({required child}) {
     if (state == IntryState.editting) {
       return SizedBox(child: child);
     }
+
+    // If not, it returns a GestureDetector wrapping the child
     return GestureDetector(
-        onDoubleTap: _foucusIn,
-        onHorizontalDragStart: (details) {
-          _startValue = widget.value;
-          _startPosition = details.globalPosition.dx;
-        },
-        onHorizontalDragUpdate: (details) =>
-            _slideValue(details.globalPosition.dx - _startPosition),
-        child: child);
+      onDoubleTap: _foucusIn,
+      onHorizontalDragStart: (details) {
+        _startValue = widget.value;
+        _startPosition = details.globalPosition.dx;
+      },
+      onHorizontalDragUpdate: (details) =>
+          _slideValue(details.globalPosition.dx - _startPosition),
+      child: child,
+    );
   }
 
+  /// Builds the text input widget.
+  ///
+  /// If the state is set to IntryState.editting, it returns a
+  /// `TextField` widget to edit the value. Otherwise, it returns a
+  /// `ValueListenableBuilder` widget that displays the value with
+  /// the postfix.
   Widget _textBuilder() {
     var text = widget.value.toString();
     if (state == IntryState.editting) {
+      // Set the TextField's text to the current value
       _textController.text = text;
       return TextField(
         focusNode: _focusNode,
@@ -89,9 +150,13 @@ class _NumericIntryState extends State<NumericIntry> {
           _setText();
           _foucusOut();
         },
+
+        // Allow only Latin and Persian digits
         inputFormatters: <TextInputFormatter>[
           FilteringTextInputFormatter.allow(RegExp('[0-9۰-۹]')),
         ],
+
+        // Set the decoration of the TextField
         decoration: const InputDecoration(
           hintText: "",
           contentPadding: EdgeInsets.fromLTRB(12, 8, 12, 8),
@@ -100,12 +165,20 @@ class _NumericIntryState extends State<NumericIntry> {
         ),
       );
     }
-    return ValueListenableBuilder(
-      valueListenable: _textController,
-      builder: (context, value, child) => Text("$text${widget.postfix}"),
-    );
+
+    return Text("$text${widget.postfix}");
   }
 
+  /// Returns the mouse cursor based on the state.
+  ///
+  /// If the state is set to [IntryState.editting], it returns
+  /// [MouseCursor.uncontrolled] to indicate that the mouse cursor
+  /// should be uncontrolled. Otherwise, it returns
+  /// [SystemMouseCursors.resizeLeftRight] to indicate that the
+  /// mouse cursor should be a resize cursor for left and right.
+  ///
+  /// This method is used to determine the mouse cursor appearance
+  /// based on the state of the widget.
   MouseCursor _getMouseCursor() {
     return switch (state) {
       IntryState.editting => MouseCursor.uncontrolled,
@@ -113,39 +186,122 @@ class _NumericIntryState extends State<NumericIntry> {
     };
   }
 
+  /// Parses the text from the text controller, converts it to Latin digits,
+  /// converts it to an integer, divides it by the number of divisions, and
+  /// passes the result to the `widget.onChanged` callback.
+  ///
+  /// The `widget.onChanged` callback is called with the result of `_clamp`,
+  /// which ensures that the value is between `widget.min` and `widget.max`,
+  /// if they are set.
   void _setText() {
+    // Parse the text from the text controller and convert it to Latin digits
     var digits = _textController.text.toLatin();
-    widget.onChanged(_clamp(_divide(int.parse(digits))));
+
+    // Parse the digits as an integer
+    var value = int.parse(digits);
+
+    // Divide the value by the number of divisions
+    value = _divide(value);
+
+    // Pass the result to the `widget.onChanged` callback, after ensuring
+    // it is between `widget.min` and `widget.max`, if they are set.
+    widget.onChanged(_clamp(value));
   }
 
+  /// Selects all the text in the text controller.
+  ///
+  /// This method is useful for implementing a "select all" functionality.
   Future<void> _selectAll() async {
-    await Future.delayed(const Duration(milliseconds: 1000));
+    // Set the text selection to select all the text in the text controller.
     _textController.selection = TextSelection(
-        baseOffset: 0, extentOffset: _textController.value.text.length);
+      baseOffset: 0,
+      extentOffset: _textController.value.text.length,
+    );
   }
 
-  void _slideValue(double d) {
+  /// Slide the value by a given amount.
+  ///
+  /// If the state is set to IntryState.editting, this function does nothing.
+  /// Otherwise, it updates the value by adding the given amount to the
+  /// current value, divides the result by the number of divisions, and passes
+  /// the result to the `widget.onChanged` callback, after ensuring that it is
+  /// between `widget.min` and `widget.max`, if they are set.
+  ///
+  /// Parameters:
+  ///   - position: The amount to slide the value by.
+  void _slideValue(double position) {
+    // If editing, do nothing
     if (state == IntryState.editting) {
       return;
     }
 
-    widget.onChanged(_clamp(_divide(_startValue + (d / 5)).round()));
+    // Calculate the new value
+    var newValue = _divide(_startValue + (position / 5)).round();
+
+    // Ensure the new value is between `widget.min` and `widget.max`, if they are set
+    var clampedValue = _clamp(newValue);
+
+    // Pass the result to the `widget.onChanged` callback
+    widget.onChanged(clampedValue);
   }
 
+  /// Call this method to focus in to the numeric input widget.
+  ///
+  /// It sets the state to `IntryState.editting` and calls `_selectAll` method
+  /// to select all the text in the text controller.
   void _foucusIn() {
+    // Set the state to `IntryState.editting` to enable editing.
     setState(() => state = IntryState.editting);
+
+    // Call `_selectAll` method to select all the text in the text controller.
     _selectAll();
   }
 
   void _foucusOut() => setState(() => state = IntryState.normal);
 
-  int _divide(num value) =>
-      (value / widget.divisions).round() * widget.divisions;
+  /// Divide the given value by the number of divisions and round it to the nearest integer.
+  /// Then, multiply the result by the number of divisions.
+  ///
+  /// This function is used to ensure that the value is a multiple of the number of divisions.
+  ///
+  /// Parameters:
+  ///   - value: The value to divide.
+  ///
+  /// Returns:
+  ///   - The value divided by the number of divisions, rounded to the nearest integer,
+  ///     then multiplied by the number of divisions.
+  ///
+  /// Example:
+  ///   If the number of divisions is 10 and the value is 12.5, the result would be 10.
+  ///   If the number of divisions is 10 and the value is 17, the result would be 20.
+  int _divide(num value) {
+    // Divide the given value by the number of divisions and round it to the nearest integer
+    var dividedValue = value / widget.divisions;
+    var roundedValue = dividedValue.round();
+    return roundedValue * widget.divisions;
+  }
 
+  /// Clamps the given value to the range specified by `widget.min` and `widget.max`.
+  ///
+  /// If `widget.min` is not null and `value` is less than `widget.min`,
+  /// `value` is set to `widget.min`.
+  /// If `widget.max` is not null and `value` is greater than `widget.max`,
+  /// `value` is set to `widget.max`.
+  ///
+  /// Parameters:
+  ///   - value: The value to clamp.
+  ///
+  /// Returns:
+  ///   - The clamped value.
   int _clamp(int value) {
+    // If `widget.min` is not null and `value` is less than `widget.min`,
+    // set `value` to `widget.min`.
     if (widget.min != null && value < widget.min!) {
       value = widget.min!;
     }
+
+    // If `widget.max` is not null and `value` is greater than `widget.max`,
+    // set `value` to `widget.max`.
     if (widget.max != null && value > widget.max!) {
       value = widget.max!;
     }
@@ -153,8 +309,17 @@ class _NumericIntryState extends State<NumericIntry> {
   }
 }
 
+/// Converts this string, which contains Persian digits, to a string with Latin digits.
 extension ToLatinExtension on String {
+  /// Converts this string, which contains Persian digits, to a string with Latin digits.
+  ///
+  /// The function uses a map to replace Persian digits with Latin digits.
+  /// The map is defined as a constant inside the extension function.
+  ///
+  /// Returns:
+  ///   - A new string with Latin digits.
   String toLatin() {
+    // The map is a constant that maps Persian digits to Latin digits.
     const Map<String, String> numbers = {
       '۰': '0',
       '۱': '1',
@@ -168,6 +333,11 @@ extension ToLatinExtension on String {
       '۹': '9',
     };
 
+    // The `replaceAllMapped` method replaces all occurrences of Persian digits
+    // with the corresponding Latin digits. The RegExp pattern `[۰-۹]` matches
+    // any Persian digit. The function passed to `replaceAllMapped` as the
+    // second argument retrieves the matched Persian digit and returns the
+    // corresponding Latin digit from the `numbers` map.
     return replaceAllMapped(
       RegExp('[۰-۹]'),
       (match) => numbers[this[match.start]]!,

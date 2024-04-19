@@ -1,39 +1,37 @@
-<!--
-This README describes the package. If you publish this package to pub.dev,
-this README's contents appear on the landing page for your package.
+# Intry
 
-For information about how to write a good package README, see the guide for
-[writing package pages](https://dart.dev/guides/libraries/writing-package-pages).
+A library for creating a numeric input widget. The [NumericIntry] widget provides a numeric input field with configurable minimum and maximum values, initial value,number of divisions, and postfix. It also provides a callback function that gets called when the value changes.
 
-For general information about developing packages, see the Dart guide for
-[creating packages](https://dart.dev/guides/libraries/create-library-packages)
-and the Flutter guide for
-[developing packages and plugins](https://flutter.dev/developing-packages).
--->
+<p float="left" align="center"><img src="https://github.com/manjav/test/raw/main/repo_files/intry_demo.gif" alt="Demo"></p>
 
-TODO: Put a short description of the package here that helps potential users
-know whether this package might be useful for them.
+---
 
-## Features
+### - Installation
+Add `intry` to your pubspec.yaml file:  
+For detailed installation instructions, refer to the [installation guide](https://pub.dev/packages/particular/install) on pub.dev.
 
-TODO: List what your package can do. Maybe include images, gifs, or videos.
+---
 
-## Getting started
+### - Getting Started 
+To use this library, import `package:intry_numeric/intry_numeric.dart`.<br>
 
-TODO: List prerequisites and provide or point to information on how to
-start using the package.
+``` dart
+int _integerValue = 0;
 
-## Usage
-
-TODO: Include short and useful examples for package users. Add longer examples
-to `/example` folder.
-
-```dart
-const like = 'sample';
+NumericIntry(
+    min: 0,
+    max: 100,
+    divisions: 5,
+    postfix: "%",
+    value: _integerValue,
+    onChanged: (int value) {
+    setState(() {
+        _integerValue = value;
+    });
+    },
+),
 ```
 
-## Additional information
+---
 
-TODO: Tell users more about the package: where to find more information, how to
-contribute to the package, how to file issues, what response they can expect
-from the package authors, and more.
+This revised README provides clear installation instructions, options for configuring particles, and steps for integrating the `intry` in your Flutter app. If you have any questions or need further assistance, don't hesitate to ask!

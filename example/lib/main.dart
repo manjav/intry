@@ -32,7 +32,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
+  int _integerValue = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -50,16 +50,16 @@ class _MyHomePageState extends State<MyHomePage> {
               max: 100,
               divisions: 5,
               postfix: "%",
-              value: _counter,
+              value: _integerValue,
               onChanged: (int value) {
                 setState(() {
-                  _counter = value;
+                  _integerValue = value;
                 });
               },
             ),
             const SizedBox(width: 30),
             Text(
-              'Min: 0\nMax:100\nDivision:5\nPostfix: "%"\nValue: $_counter',
+              'Min: 0\nMax: 100\nDivision: 5\nPostfix: "%"\nValue: $_integerValue',
               style: Theme.of(context).textTheme.titleSmall,
             ),
           ],
