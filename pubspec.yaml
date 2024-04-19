@@ -1,5 +1,5 @@
 name: intry
-description: "The Intry is a high performance particle effects flutter widget."
+description: "Intry is a highly efficient and rich UI component set designed specifically for creating editor and graphic design applications."
 version: 0.0.1
 homepage: 
 repository: https://github.com/manjav/intry
@@ -25,8 +25,8 @@ dev_dependencies:
 #     path: pub_screenshots/line_chart.jpg
 
 topics:
-  - TextField
-  - TextInput
-  - Slider
-  - UI
-  - UX
+  - textfield
+  - textinput
+  - slider
+  - ui
+  - ux
