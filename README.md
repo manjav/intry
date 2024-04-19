@@ -14,7 +14,7 @@ For detailed installation instructions, refer to the [installation guide](https:
 ---
 
 ### - Getting Started 
-To use this library, import `package:intry_numeric/intry_numeric.dart`.<br>
+To use this library, import `package:intry_numeric/intry_numeric.dart`.
 
 ``` dart
 int _integerValue = 0;
