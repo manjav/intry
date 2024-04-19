@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intry/intry.dart';
 
 void main() {
   runApp(const MyApp());
@@ -56,9 +57,14 @@ class _MyHomePageState extends State<MyHomePage> {
                 });
               },
             ),
+            const SizedBox(width: 30),
+            Text(
+              'Min: 0\nMax:100\nDivision:5\nPostfix: "%"\nValue: $_counter',
+              style: Theme.of(context).textTheme.titleSmall,
+            ),
           ],
-            ),
-            ),
+        ),
+      ),
     );
   }
 }
