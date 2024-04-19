@@ -1,6 +1,7 @@
 # Intry
 
-A library for creating a numeric input widget. The [NumericIntry] widget provides a numeric input field with configurable minimum and maximum values, initial value,number of divisions, and postfix. It also provides a callback function that gets called when the value changes.
+`Intry` is a highly efficient and rich UI component set designed specifically for creating editor and graphic design applications.
+One of the components in Intry, `NumericItery`, combines both slider and text field capabilities in a compact and user-friendly package. With its intuitive interface and extensive customization options, NumericItery makes it effortless to incorporate interactive numerical values into your applications, enhancing the overall user experience.
 
 <p float="left" align="center"><img src="https://github.com/manjav/test/raw/main/repo_files/intry_demo.gif" alt="Demo"></p>
 
