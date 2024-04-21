@@ -48,26 +48,13 @@ class NumericIntry extends StatefulWidget {
 }
 
 class _NumericIntryState extends State<NumericIntry> {
-  IntryState state = IntryState.normal;
+  MaterialState _state = MaterialState.selected;
   final TextEditingController _textController = TextEditingController();
   final _focusNode = FocusNode();
   double _startPosition = 0;
   int _startValue = 0;
 
-  @override
-
   /// Builds the widget tree for this state.
-  ///
-  /// This method builds a widget tree that consists of a `TapRegion` widget
-  /// wrapping a `MouseRegion` widget wrapping a `Container` widget. The
-  /// `TapRegion` widget listens for taps outside of itself and calls `_setText`
-  /// and `_foucusOut` if the state is set to `IntryState.editting`. The
-  /// `MouseRegion` widget sets the cursor based on the state and the `Container`
-  /// widget contains a child built by `_textBuilder`. The `Container` widget
-  /// is aligned to the center, has a tight size of 72 by 36 logical pixels, and
-  /// has a border with a width of 1 pixel and a color of `Colors.black12`
-  /// surrounding a rounded border with a radius of 3 pixels.
-  ///
   /// Returns a `Widget` that represents the widget tree built in this method.
   @override
   Widget build(BuildContext context) {
@@ -81,6 +68,8 @@ class _NumericIntryState extends State<NumericIntry> {
       },
       child: _gestureDetector(
         child: MouseRegion(
+          onEnter: (event) => _onMouseHover(true),
+          onExit: (event) => _onMouseHover(false),
           cursor: _getMouseCursor(),
           child: Container(
             constraints: BoxConstraints.tight(const Size(72, 36)),
@@ -174,8 +163,8 @@ class _NumericIntryState extends State<NumericIntry> {
   /// This method is used to determine the mouse cursor appearance
   /// based on the state of the widget.
   MouseCursor _getMouseCursor() {
-    return switch (state) {
-      IntryState.editting => MouseCursor.uncontrolled,
+    return switch (_state) {
+      MaterialState.pressed => MouseCursor.uncontrolled,
       _ => SystemMouseCursors.resizeLeftRight,
     };
   }
@@ -249,6 +238,21 @@ class _NumericIntryState extends State<NumericIntry> {
 
     // Call `_selectAll` method to select all the text in the text controller.
     _selectAll();
+  }
+
+  /// Updates the state of the widget based on whether the mouse is hovering over it.
+  ///
+  /// If the widget is currently in the selected or hovered state, it will change
+  /// to the hovered state if the mouse is hovering over it, or to the selected
+  /// state if it is not.
+  ///
+  /// Parameters:
+  ///   - isHover: A boolean indicating whether the mouse is hovering over the widget.
+  void _onMouseHover(bool isHover) {
+    if (_state == MaterialState.selected || _state == MaterialState.hovered) {
+      _state = isHover ? MaterialState.hovered : MaterialState.selected;
+      setState(() {});
+    }
   }
 
   void _foucusOut() => setState(() => _state = MaterialState.selected);
