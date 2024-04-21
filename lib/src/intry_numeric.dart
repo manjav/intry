@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:intry/intry.dart';
 
 /// A library for creating a numeric input widget.
 ///
@@ -29,6 +30,22 @@ class NumericIntry extends StatefulWidget {
   /// The callback function that gets called when the value changes.
   final ValueChanged<int> onChanged;
 
+  /// If false the text field is "disabled": it ignores taps and its
+  /// [decoration] is rendered in grey.
+  ///
+  /// If non-null this property overrides the [decoration]'s
+  /// [InputDecoration.enabled] property.
+  final bool? enabled;
+
+  /// The decoration to show around the text field.
+  ///
+  /// By default, draws a horizontal line under the text field but can be
+  /// configured to show an icon, label, hint text, and error text.
+  ///
+  /// Specify null to remove the decoration entirely (including the
+  /// extra padding introduced by the decoration to save space for the labels).
+  final MaterialStateProperty<Decoration?>? decoration;
+
   /// Creates a widget for a numeric input with the given configurations.
   ///
   /// The [value] argument must not be null.
@@ -39,6 +56,7 @@ class NumericIntry extends StatefulWidget {
     this.max,
     this.postfix = "",
     this.divisions = 1,
+    this.decoration,
     required this.value,
     required this.onChanged,
   });
@@ -74,10 +92,7 @@ class _NumericIntryState extends State<NumericIntry> {
           child: Container(
             constraints: BoxConstraints.tight(const Size(72, 36)),
             alignment: Alignment.center,
-            decoration: BoxDecoration(
-              border: Border.all(width: 1, color: Colors.black12),
-              borderRadius: BorderRadius.circular(3),
-            ),
+            decoration: _getEffectiveDecoration(),
             child: _textBuilder(), // Builds the child of the Container
           ),
         ),
@@ -139,18 +154,23 @@ class _NumericIntryState extends State<NumericIntry> {
           FilteringTextInputFormatter.allow(RegExp('[0-9۰-۹]')),
         ],
 
-        // Set the decoration of the TextField
+        // Set blank decoration of the TextField
         decoration: const InputDecoration(
-          hintText: "",
-          contentPadding: EdgeInsets.fromLTRB(12, 8, 12, 8),
-          border: OutlineInputBorder(
-              borderRadius: BorderRadius.all(Radius.circular(3))),
-        ),
+            contentPadding: EdgeInsets.fromLTRB(12, 8, 12, 20),
+            border: InputBorder.none),
       );
     }
 
     return Text("$text${widget.postfix}");
   }
+
+  Decoration? _getEffectiveDecoration() {
+    final Set<MaterialState> states = <MaterialState>{_state};
+    final stateDecorator =
+        widget.decoration ?? NumericIntryDecoration.underline(context);
+    return stateDecorator.resolve(states);
+  }
+
 
   /// Returns the mouse cursor based on the state.
   ///
