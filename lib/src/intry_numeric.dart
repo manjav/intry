@@ -44,7 +44,30 @@ class NumericIntry extends StatefulWidget {
   ///
   /// Specify null to remove the decoration entirely (including the
   /// extra padding introduced by the decoration to save space for the labels).
+  /// [MaterialStateProperty.resolve] is used for the following [MaterialState]s:
+  ///
+  ///  * [MaterialState.hovered] => Hover state.
+  ///  * [MaterialState.focused] => Text edittig state.
+  ///  * [MaterialState.disabled] => Disabled state.
   final MaterialStateProperty<Decoration?>? decoration;
+
+  /// The cursor for a mouse pointer when it enters or is hovering over the
+  /// widget. (COMMING SOON)
+  ///
+  /// If [mouseCursor] is a [MaterialStateProperty<MouseCursor>],
+  /// [MaterialStateProperty.resolve] is used for the following [MaterialState]s:
+  ///
+  ///  * [MaterialState.hovered] => Hover state.
+  ///  * [MaterialState.focused] => Text edittig state.
+  ///  * [MaterialState.disabled] => Disabled state.
+  ///
+  /// If this property is null, [MaterialStateMouseCursor.clickable] will be used.
+  ///
+  /// The [mouseCursor] is the only property of [TextField] that controls the
+  /// appearance of the mouse pointer. All other properties related to "cursor"
+  /// stand for the text cursor, which is usually a blinking vertical line at
+  /// the editing position.
+  final MouseCursor? mouseCursor;
 
   /// Creates a widget for a numeric input with the given configurations.
   ///
@@ -56,7 +79,9 @@ class NumericIntry extends StatefulWidget {
     this.max,
     this.postfix = "",
     this.divisions = 1,
+    this.enabled,
     this.decoration,
+    this.mouseCursor,
     required this.value,
     required this.onChanged,
   });
@@ -65,14 +90,38 @@ class NumericIntry extends StatefulWidget {
   State<NumericIntry> createState() => _NumericIntryState();
 }
 
+/// `_NumericIntryState` is a state class for the NumericEntry widget.
+///
+/// It manages the state of the NumericEntry widget, including the current value
+/// and whether the widget is currently focused. It provides methods to update
+/// the value and handle user input.
 class _NumericIntryState extends State<NumericIntry> {
+  /// Controller for managing the text input in the widget
   final TextEditingController _textController = TextEditingController();
-  final _focusNode = FocusNode();
+
+  /// Focus node for handling focus in the widget
+  final FocusNode _focusNode = FocusNode();
+
+  /// Initial position of the widget
   double _startPosition = 0;
+
+  /// Initial value of the widget
   int _startValue = 0;
 
+  /// Flag to indicate if the widget is being hovered over
   bool _isHover = false;
+
+  /// Flag to indicate if the widget is currently in edit mode
   bool _isTextEditting = false;
+
+  /// Flag to indicate if the widget is enabled or disabled.
+  ///
+  /// If [widget.enabled] is not null, it is used as the value of this field.
+  /// Otherwise, it is set to `true` by default.
+  ///
+  /// This field determines whether the widget is enabled or disabled. It is
+  /// used to control the user interaction with the widget, such as allowing
+  /// or disallowing input and changing the appearance based on the state.
   bool get _isEnabled => widget.enabled ?? true;
 
   /// Builds the widget tree for this state.
@@ -89,8 +138,8 @@ class _NumericIntryState extends State<NumericIntry> {
       },
       child: _gestureDetector(
         child: MouseRegion(
-          onEnter: (event) => _onMouseHover(true),
-          onExit: (event) => _onMouseHover(false),
+          onEnter: (event) => setState(() => _isHover = true),
+          onExit: (event) => setState(() => _isHover = false),
           cursor: _getMouseCursor(),
           child: Container(
             constraints: BoxConstraints.tight(const Size(72, 36)),
@@ -281,22 +330,12 @@ class _NumericIntryState extends State<NumericIntry> {
     _selectAll();
   }
 
-  /// Updates the state of the widget based on whether the mouse is hovering over it.
+  /// Call this method to focus out of the numeric input widget.
   ///
-  /// If the widget is currently in the selected or hovered state, it will change
-  /// to the hovered state if the mouse is hovering over it, or to the selected
-  /// state if it is not.
-  ///
-  /// Parameters:
-  ///   - isHover: A boolean indicating whether the mouse is hovering over the widget.
-  void _onMouseHover(bool isHover) {
-    if (_state == MaterialState.selected || _state == MaterialState.hovered) {
-      _state = isHover ? MaterialState.hovered : MaterialState.selected;
-      setState(() {});
-    }
+  /// It sets the state to `IntryState.notEditting` to disable editing.
+  void _foucusOut() {
+    setState(() => _isTextEditting = false);
   }
-
-  void _foucusOut() => setState(() => _state = MaterialState.selected);
 
   /// Divide the given value by the number of divisions and round it to the nearest integer.
   /// Then, multiply the result by the number of divisions.

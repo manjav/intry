@@ -22,7 +22,7 @@ class NumericIntryDecoration {
         border: Border(
             bottom: BorderSide(
           color: color,
-          width: states.contains(MaterialState.pressed) ? 1.5 : 1.0,
+          width: states.contains(MaterialState.focused) ? 1.5 : 1.0,
         )),
       );
     });
@@ -39,7 +39,7 @@ class NumericIntryDecoration {
       return BoxDecoration(
         border: Border.all(
           color: color,
-          width: states.contains(MaterialState.pressed) ? 1.5 : 1.0,
+          width: states.contains(MaterialState.focused) ? 1.5 : 1.0,
         ),
         borderRadius: const BorderRadius.all(
           Radius.circular(4.0),
@@ -59,7 +59,7 @@ class NumericIntryDecoration {
   /// returned.
   /// If the [states] contains [MaterialState.hovered], the primary color is
   /// returned.
-  /// If the [states] contains [MaterialState.pressed], the focus color is
+  /// If the [states] contains [MaterialState.focused], the focus color is
   /// returned.
   /// In all other cases, the unselected widget color is returned.
   static Color? _getEffectiveColor(
@@ -70,11 +70,11 @@ class NumericIntryDecoration {
     if (states.contains(MaterialState.disabled)) {
       return themeData.disabledColor;
     }
+    if (states.contains(MaterialState.focused)) {
+      return themeData.primaryColor;
+    }
     if (states.contains(MaterialState.hovered)) {
       return themeData.unselectedWidgetColor;
-    }
-    if (states.contains(MaterialState.pressed)) {
-      return themeData.primaryColor;
     }
 
     return themeData.focusColor;
