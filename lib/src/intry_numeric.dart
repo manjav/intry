@@ -196,6 +196,7 @@ class _NumericIntryState extends State<NumericIntry> {
         controller: _textController,
         textAlign: TextAlign.center,
         textAlignVertical: TextAlignVertical.center,
+        keyboardType: TextInputType.number,
         onSubmitted: (e) {
           _setText();
           _foucusOut();
