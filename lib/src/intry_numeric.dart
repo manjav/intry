@@ -67,7 +67,7 @@ class NumericIntry extends StatefulWidget {
   /// appearance of the mouse pointer. All other properties related to "cursor"
   /// stand for the text cursor, which is usually a blinking vertical line at
   /// the editing position.
-  final MouseCursor? mouseCursor;
+  final MaterialStateProperty<MouseCursor?>? mouseCursor;
 
   /// Creates a widget for a numeric input with the given configurations.
   ///
@@ -86,6 +86,7 @@ class NumericIntry extends StatefulWidget {
     required this.onChanged,
   });
 
+  /// Creates the mutable state for this widget at a given location in the
   @override
   State<NumericIntry> createState() => _NumericIntryState();
 }
@@ -147,7 +148,8 @@ class _NumericIntryState extends State<NumericIntry> {
         child: MouseRegion(
           onEnter: (event) => setState(() => _isHover = true),
           onExit: (event) => setState(() => _isHover = false),
-          cursor: _getMouseCursor(),
+          cursor:
+              _mouseCursorStates.resolve(_states) ?? MouseCursor.uncontrolled,
           child: Container(
             constraints: BoxConstraints.tight(const Size(72, 36)),
             alignment: Alignment.center,
@@ -245,21 +247,14 @@ class _NumericIntryState extends State<NumericIntry> {
     return stateDecorator.resolve(_states);
   }
 
-  /// Returns the mouse cursor based on the state.
-  ///
-  /// If the state is set to [IntryState.editting], it returns
-  /// [MouseCursor.uncontrolled] to indicate that the mouse cursor
-  /// should be uncontrolled. Otherwise, it returns
-  /// [SystemMouseCursors.resizeLeftRight] to indicate that the
-  /// mouse cursor should be a resize cursor for left and right.
-  ///
-  /// This method is used to determine the mouse cursor appearance
-  /// based on the state of the widget.
-  MouseCursor _getMouseCursor() {
-    if (_isTextEditting) {
-      return MouseCursor.uncontrolled;
-    }
-    return SystemMouseCursors.resizeLeftRight;
+  MaterialStateProperty<MouseCursor?> get _mouseCursorStates {
+    return widget.mouseCursor ??
+        MaterialStateProperty.resolveWith((states) {
+          if (!states.contains(MaterialState.focused)) {
+            return SystemMouseCursors.resizeLeftRight;
+          }
+          return SystemMouseCursors.basic;
+        });
   }
 
   /// Parses the text from the text controller, converts it to Latin digits,
