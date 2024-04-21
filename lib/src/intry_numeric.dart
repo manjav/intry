@@ -1,12 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-/// Intry state enum for the numeric input widget.
-enum IntryState {
-  normal,
-  editting,
-}
-
 /// A library for creating a numeric input widget.
 ///
 /// The [NumericIntry] widget provides a numeric input field with
@@ -80,7 +74,7 @@ class _NumericIntryState extends State<NumericIntry> {
     // Builds the widget tree
     return TapRegion(
       onTapOutside: (e) {
-        if (state == IntryState.editting) {
+        if (_state == MaterialState.pressed) {
           _setText();
           _foucusOut();
         }
@@ -113,7 +107,7 @@ class _NumericIntryState extends State<NumericIntry> {
   /// Parameters:
   ///   - child: The child widget to wrap with a GestureDetector.
   Widget _gestureDetector({required child}) {
-    if (state == IntryState.editting) {
+    if (_state == MaterialState.pressed) {
       return SizedBox(child: child);
     }
 
@@ -138,7 +132,7 @@ class _NumericIntryState extends State<NumericIntry> {
   /// the postfix.
   Widget _textBuilder() {
     var text = widget.value.toString();
-    if (state == IntryState.editting) {
+    if (_state == MaterialState.pressed) {
       // Set the TextField's text to the current value
       _textController.text = text;
       return TextField(
@@ -231,7 +225,7 @@ class _NumericIntryState extends State<NumericIntry> {
   ///   - position: The amount to slide the value by.
   void _slideValue(double position) {
     // If editing, do nothing
-    if (state == IntryState.editting) {
+    if (_state == MaterialState.pressed) {
       return;
     }
 
@@ -251,13 +245,13 @@ class _NumericIntryState extends State<NumericIntry> {
   /// to select all the text in the text controller.
   void _foucusIn() {
     // Set the state to `IntryState.editting` to enable editing.
-    setState(() => state = IntryState.editting);
+    setState(() => _state = MaterialState.pressed);
 
     // Call `_selectAll` method to select all the text in the text controller.
     _selectAll();
   }
 
-  void _foucusOut() => setState(() => state = IntryState.normal);
+  void _foucusOut() => setState(() => _state = MaterialState.selected);
 
   /// Divide the given value by the number of divisions and round it to the nearest integer.
   /// Then, multiply the result by the number of divisions.
