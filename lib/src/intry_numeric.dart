@@ -124,6 +124,13 @@ class _NumericIntryState extends State<NumericIntry> {
   /// or disallowing input and changing the appearance based on the state.
   bool get _isEnabled => widget.enabled ?? true;
 
+  /// Returns a set of [MaterialState]s representing the current state of the widget.
+  Set<MaterialState> get _states => <MaterialState>{
+        if (!_isEnabled) MaterialState.disabled,
+        if (_isHover) MaterialState.hovered,
+        if (_isTextEditting) MaterialState.focused,
+      };
+
   /// Builds the widget tree for this state.
   /// Returns a `Widget` that represents the widget tree built in this method.
   @override
@@ -233,14 +240,9 @@ class _NumericIntryState extends State<NumericIntry> {
   ///
   /// Returns a [Decoration] object representing the effective decoration.
   Decoration? _getEffectiveDecoration() {
-    final Set<MaterialState> states = <MaterialState>{
-      if (!_isEnabled) MaterialState.disabled,
-      if (_isHover) MaterialState.hovered,
-      if (_isTextEditting) MaterialState.focused,
-    };
     final stateDecorator =
         widget.decoration ?? NumericIntryDecoration.underline(context);
-    return stateDecorator.resolve(states);
+    return stateDecorator.resolve(_states);
   }
 
   /// Returns the mouse cursor based on the state.
