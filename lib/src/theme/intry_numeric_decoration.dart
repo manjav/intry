@@ -1,6 +1,19 @@
 import 'package:flutter/material.dart';
 
+/// Class for creating decorations for the [NumericIntry] widget.
+///
+/// The `NumericIntryDecoration` class provides static methods for creating
+/// decorations that can be used to customize the appearance of the
+/// [NumericIntry] widget.
+///
+/// The decorations can be used to draw an underline or an outline around
+/// the widget based on the state of the widget. The color of the underline
+/// or outline can be customized based on the state of the widget.
 class NumericIntryDecoration {
+  /// Creates a decoration that draws an underline with a customizable width and
+  /// color based on the state of the [NumericIntry] widget.
+  ///
+  /// The [context] parameter is used to determine the color of the underline.
   static MaterialStateProperty<Decoration?> underline(BuildContext context) {
     return MaterialStateProperty.resolveWith((states) {
       final color = _getEffectiveColor(context, states)!;
@@ -15,6 +28,10 @@ class NumericIntryDecoration {
     });
   }
 
+  /// Creates a decoration that draws an outline with a customizable color and
+  /// border width based on the state of the [NumericIntry] widget.
+  ///
+  /// The [context] parameter is used to determine the color of the outline.
   static MaterialStateProperty<Decoration?> outline(BuildContext context) {
     return MaterialStateProperty.resolveWith((states) {
       final color = _getEffectiveColor(context, states)!;

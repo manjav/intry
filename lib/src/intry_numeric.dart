@@ -66,11 +66,14 @@ class NumericIntry extends StatefulWidget {
 }
 
 class _NumericIntryState extends State<NumericIntry> {
-  MaterialState _state = MaterialState.selected;
   final TextEditingController _textController = TextEditingController();
   final _focusNode = FocusNode();
   double _startPosition = 0;
   int _startValue = 0;
+
+  bool _isHover = false;
+  bool _isTextEditting = false;
+  bool get _isEnabled => widget.enabled ?? true;
 
   /// Builds the widget tree for this state.
   /// Returns a `Widget` that represents the widget tree built in this method.
@@ -79,7 +82,7 @@ class _NumericIntryState extends State<NumericIntry> {
     // Builds the widget tree
     return TapRegion(
       onTapOutside: (e) {
-        if (_state == MaterialState.pressed) {
+        if (_isTextEditting) {
           _setText();
           _foucusOut();
         }
@@ -111,7 +114,7 @@ class _NumericIntryState extends State<NumericIntry> {
   /// Parameters:
   ///   - child: The child widget to wrap with a GestureDetector.
   Widget _gestureDetector({required child}) {
-    if (_state == MaterialState.pressed) {
+    if (_isTextEditting) {
       return SizedBox(child: child);
     }
 
@@ -136,7 +139,7 @@ class _NumericIntryState extends State<NumericIntry> {
   /// the postfix.
   Widget _textBuilder() {
     var text = widget.value.toString();
-    if (_state == MaterialState.pressed) {
+    if (_isTextEditting) {
       // Set the TextField's text to the current value
       _textController.text = text;
       return TextField(
@@ -164,13 +167,31 @@ class _NumericIntryState extends State<NumericIntry> {
     return Text("$text${widget.postfix}");
   }
 
+  /// Returns the effective decoration based on the current state.
+  ///
+  /// It first creates a set of [MaterialState]s containing the current state.
+  /// Then, it checks if [widget.decoration] is not null. If it is not null,
+  /// it assigns it to [stateDecorator]. Otherwise, it uses the
+  /// [NumericIntryDecoration.underline] constructor to create a default
+  /// underline decoration using the provided [BuildContext].
+  ///
+  /// Finally, it calls the [resolve] method on [stateDecorator] passing the
+  /// set of states to retrieve the effective decoration.
+  ///
+  /// This method is used to determine the decoration to apply to the widget
+  /// based on its current state.
+  ///
+  /// Returns a [Decoration] object representing the effective decoration.
   Decoration? _getEffectiveDecoration() {
-    final Set<MaterialState> states = <MaterialState>{_state};
+    final Set<MaterialState> states = <MaterialState>{
+      if (!_isEnabled) MaterialState.disabled,
+      if (_isHover) MaterialState.hovered,
+      if (_isTextEditting) MaterialState.focused,
+    };
     final stateDecorator =
         widget.decoration ?? NumericIntryDecoration.underline(context);
     return stateDecorator.resolve(states);
   }
-
 
   /// Returns the mouse cursor based on the state.
   ///
@@ -183,10 +204,10 @@ class _NumericIntryState extends State<NumericIntry> {
   /// This method is used to determine the mouse cursor appearance
   /// based on the state of the widget.
   MouseCursor _getMouseCursor() {
-    return switch (_state) {
-      MaterialState.pressed => MouseCursor.uncontrolled,
-      _ => SystemMouseCursors.resizeLeftRight,
-    };
+    if (_isTextEditting) {
+      return MouseCursor.uncontrolled;
+    }
+    return SystemMouseCursors.resizeLeftRight;
   }
 
   /// Parses the text from the text controller, converts it to Latin digits,
@@ -234,7 +255,7 @@ class _NumericIntryState extends State<NumericIntry> {
   ///   - position: The amount to slide the value by.
   void _slideValue(double position) {
     // If editing, do nothing
-    if (_state == MaterialState.pressed) {
+    if (_isTextEditting) {
       return;
     }
 
@@ -254,7 +275,7 @@ class _NumericIntryState extends State<NumericIntry> {
   /// to select all the text in the text controller.
   void _foucusIn() {
     // Set the state to `IntryState.editting` to enable editing.
-    setState(() => _state = MaterialState.pressed);
+    setState(() => _isTextEditting = true);
 
     // Call `_selectAll` method to select all the text in the text controller.
     _selectAll();
