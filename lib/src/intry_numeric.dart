@@ -13,13 +13,13 @@ import 'package:intry/intry.dart';
 
 class NumericIntry extends StatefulWidget {
   /// The minimum value for the numeric input.
-  final int? min;
+  final double? min;
 
   /// The maximum value for the numeric input.
-  final int? max;
+  final double? max;
 
   /// The initial value for the numeric input.
-  final int value;
+  final double value;
 
   /// The number of divisions for the numeric input.
   final int divisions;
@@ -28,7 +28,7 @@ class NumericIntry extends StatefulWidget {
   final String postfix;
 
   /// The callback function that gets called when the value changes.
-  final ValueChanged<int> onChanged;
+  final ValueChanged<double> onChanged;
 
   /// If false the text field is "disabled": it ignores taps and its
   /// [decoration] is rendered in grey.
@@ -269,10 +269,10 @@ class _NumericIntryState extends State<NumericIntry> {
     var digits = _textController.text.toLatin();
 
     // Parse the digits as an integer
-    var value = int.parse(digits);
+    var value = double.parse(digits);
 
     // Divide the value by the number of divisions
-    value = _divide(value);
+    value = _divide(value).toDouble();
 
     // Pass the result to the `widget.onChanged` callback, after ensuring
     // it is between `widget.min` and `widget.max`, if they are set.
@@ -344,32 +344,33 @@ class _NumericIntryState extends State<NumericIntry> {
   ///   - value: The value to divide.
   ///
   /// Returns:
-  ///   - The value divided by the number of divisions, rounded to the nearest integer,
+  ///   - The value divided by the number of divisions, rounded to the nearest number,
   ///     then multiplied by the number of divisions.
   ///
   /// Example:
   ///   If the number of divisions is 10 and the value is 12.5, the result would be 10.
   ///   If the number of divisions is 10 and the value is 17, the result would be 20.
-  int _divide(num value) {
-    // Divide the given value by the number of divisions and round it to the nearest integer
+  num _divide(num value) {
+    // Divide the given value by the number of divisions and round it to the nearest number
     var dividedValue = value / widget.divisions;
     var roundedValue = dividedValue.round();
     return roundedValue * widget.divisions;
   }
 
-  /// Clamps the given value to the range specified by `widget.min` and `widget.max`.
+  /// Clamps the given value to the range defined by `widget.min` and `widget.max`.
   ///
   /// If `widget.min` is not null and `value` is less than `widget.min`,
-  /// `value` is set to `widget.min`.
+  /// the function sets `value` to `widget.min`.
   /// If `widget.max` is not null and `value` is greater than `widget.max`,
-  /// `value` is set to `widget.max`.
+  /// the function sets `value` to `widget.max`.
   ///
   /// Parameters:
-  ///   - value: The value to clamp.
+  ///   - value: The value to be clamped.
   ///
   /// Returns:
   ///   - The clamped value.
-  int _clamp(int value) {
+  double _clamp(double value) {
+    // Clamp the value to the range defined by `widget.min` and `widget.max`.
     // If `widget.min` is not null and `value` is less than `widget.min`,
     // set `value` to `widget.min`.
     if (widget.min != null && value < widget.min!) {
@@ -381,6 +382,7 @@ class _NumericIntryState extends State<NumericIntry> {
     if (widget.max != null && value > widget.max!) {
       value = widget.max!;
     }
+
     return value;
   }
 }
