@@ -147,13 +147,13 @@ class _NumericIntryState extends State<NumericIntry> {
       onTapOutside: (e) {
         if (_isTextEditting) {
           _setText();
-          _foucusOut();
+          setState(() => _isTextEditting = false);
         }
       },
       child: _gestureDetector(
         child: MouseRegion(
-          onEnter: (event) => setState(() => _isHover = true),
-          onExit: (event) => setState(() => _isHover = false),
+          onEnter: (event) => _onHover(true),
+          onExit: (event) => _onHover(false),
           cursor:
               _mouseCursorStates.resolve(_states) ?? MouseCursor.uncontrolled,
           child: Container(
@@ -165,6 +165,24 @@ class _NumericIntryState extends State<NumericIntry> {
         ),
       ),
     );
+  }
+
+  /// Handles the hover event by updating the state of the widget.
+  ///
+  /// This function is called when the user hovers over the widget. It takes a
+  /// parameter [isHover] which indicates whether the user is currently hovering
+  /// over the widget. If the widget is currently in text editing mode, the function
+  /// returns without updating the state. Otherwise, it updates the state of the
+  /// widget by setting the [_isHover] property to [isHover].
+  ///
+  /// Parameters:
+  ///   - isHover: A boolean value indicating whether the user is currently
+  ///             hovering over the widget.
+  void _onHover(bool isHover) {
+    if (_isTextEditting) {
+      return;
+    }
+    setState(() => _isHover = isHover);
   }
 
   /// Wraps the child with a GestureDetector to detect gestures.
@@ -184,7 +202,7 @@ class _NumericIntryState extends State<NumericIntry> {
 
     // If not, it returns a GestureDetector wrapping the child
     return GestureDetector(
-      onDoubleTap: _foucusIn,
+      onDoubleTap: () => setState(() => _isTextEditting = true),
       onHorizontalDragStart: (details) {
         _startValue = widget.value;
         _startPosition = details.globalPosition.dx;
@@ -214,7 +232,7 @@ class _NumericIntryState extends State<NumericIntry> {
         keyboardType: TextInputType.number,
         onSubmitted: (e) {
           _setText();
-          _foucusOut();
+          setState(() => _isTextEditting = false);
         },
 
         // Allow only Latin and Persian digits
@@ -321,25 +339,6 @@ class _NumericIntryState extends State<NumericIntry> {
 
     // Pass the result to the `widget.onChanged` callback
     widget.onChanged(clampedValue);
-  }
-
-  /// Call this method to focus in to the numeric input widget.
-  ///
-  /// It sets the state to `IntryState.editting` and calls `_selectAll` method
-  /// to select all the text in the text controller.
-  void _foucusIn() {
-    // Set the state to `IntryState.editting` to enable editing.
-    setState(() => _isTextEditting = true);
-
-    // Call `_selectAll` method to select all the text in the text controller.
-    _selectAll();
-  }
-
-  /// Call this method to focus out of the numeric input widget.
-  ///
-  /// It sets the state to `IntryState.notEditting` to disable editing.
-  void _foucusOut() {
-    setState(() => _isTextEditting = false);
   }
 
   /// Divide the given value by the number of divisions and round it to the nearest integer.
