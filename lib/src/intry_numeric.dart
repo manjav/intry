@@ -157,7 +157,7 @@ class _NumericIntryState extends State<NumericIntry> {
           cursor:
               _mouseCursorStates.resolve(_states) ?? MouseCursor.uncontrolled,
           child: Container(
-            constraints: BoxConstraints.tight(const Size(72, 36)),
+            constraints: BoxConstraints.tight(const Size(48, 36)),
             alignment: Alignment.center,
             decoration: _getEffectiveDecoration(),
             child: _textBuilder(), // Builds the child of the Container
