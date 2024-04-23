@@ -22,14 +22,39 @@ class NumericIntry extends StatefulWidget {
   /// The initial value for the numeric input.
   final double value;
 
-  /// The number of divisions for the numeric input.
+  /// Represents the list of divisions to display.
+  /// Each division should be an object with the following properties:
+  /// - `name`: The name of the division.
+  /// - `value`: The value of the division.
+  ///
+  /// Type: int
+  ///
+  /// Default: 1
   final int divisions;
 
+  /// Represents the speed at which the animation progresses.
+  /// The value should be a number greater than 0.
+  /// A higher value indicates faster animation.
+  ///
+  /// Type: double
+  ///
+  /// Default: 0.2
   final double changeSpeed;
 
+  /// Represents the number of decimal places to round the fraction.
+  /// The value should be a non-negative integer.
+  /// A higher value indicates more decimal places to round.
+  ///
+  /// Type: int
+  ///
+  /// Default: 0
   final int fractionDigits;
 
-  /// The postfix for the numeric input.
+  /// Represents the postfix to display after the value.
+  ///
+  /// Type: String
+  ///
+  /// Default: ''
   final String postfix;
 
   /// The callback function that gets called when the value changes.
@@ -158,7 +183,7 @@ class _NumericIntryState extends State<NumericIntry> {
           cursor:
               _mouseCursorStates.resolve(_states) ?? MouseCursor.uncontrolled,
           child: Container(
-            constraints: BoxConstraints.tight(const Size(48, 36)),
+            constraints: BoxConstraints.tight(const Size(64, 36)),
             alignment: Alignment.center,
             decoration: _getEffectiveDecoration(),
             child: _textBuilder(), // Builds the child of the Container
@@ -243,7 +268,7 @@ class _NumericIntryState extends State<NumericIntry> {
 
         // Set blank decoration of the TextField
         decoration: const InputDecoration(
-            contentPadding: EdgeInsets.fromLTRB(12, 8, 12, 20),
+            contentPadding: EdgeInsets.fromLTRB(0, 0, 0, 16),
             border: InputBorder.none),
       );
     }

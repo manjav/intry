@@ -3,7 +3,7 @@
 `Intry` is a highly efficient and rich UI component set designed specifically for creating editor and graphic design applications.
 One of the components in Intry, `NumericItery`, combines both slider and text field capabilities in a compact and user-friendly package. With its intuitive interface and extensive customization options, NumericItery makes it effortless to incorporate interactive numerical values into your applications, enhancing the overall user experience.
 
-<p float="left" align="center"><img src="https://github.com/manjav/intry/raw/main/repo_files/intry_demo.gif" alt="Demo"></p>
+<p float="left" align="center"><img src="https://github.com/manjav/intry/raw/main/repo_files/intry_demo.gif" alt="Demo" height=298></p>
 
 ---
 
