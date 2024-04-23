@@ -74,9 +74,9 @@ class NumericIntryDecoration {
       return themeData.primaryColor;
     }
     if (states.contains(MaterialState.hovered)) {
-      return themeData.unselectedWidgetColor;
+      return themeData.cardColor;
     }
 
-    return themeData.focusColor;
+    return themeData.splashColor;
   }
 }
