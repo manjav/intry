@@ -26,6 +26,8 @@ class NumericIntry extends StatefulWidget {
 
   final double changeSpeed;
 
+  final int fractionDigits;
+
   /// The postfix for the numeric input.
   final String postfix;
 
@@ -81,6 +83,7 @@ class NumericIntry extends StatefulWidget {
     this.max,
     this.postfix = "",
     this.divisions = 1,
+    this.fractionDigits = 0,
     this.changeSpeed = 0.2,
     this.enabled,
     this.decoration,
@@ -199,7 +202,7 @@ class _NumericIntryState extends State<NumericIntry> {
   /// `ValueListenableBuilder` widget that displays the value with
   /// the postfix.
   Widget _textBuilder() {
-    var text = widget.value.toString();
+    var text = widget.value.toStringAsFixed(widget.fractionDigits);
     if (_isTextEditting) {
       // Set the TextField's text to the current value
       _textController.text = text;
