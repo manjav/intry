@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intry/intry.dart';
+import 'package:math_parser/math_parser.dart';
 
 /// A library for creating a numeric input widget.
 ///
@@ -237,7 +238,7 @@ class _NumericIntryState extends State<NumericIntry> {
 
         // Allow only Latin and Persian digits
         inputFormatters: <TextInputFormatter>[
-          FilteringTextInputFormatter.allow(RegExp('[0-9۰-۹]')),
+          FilteringTextInputFormatter.allow(RegExp('[0-9۰-۹*/+-^%()]')),
         ],
 
         // Set blank decoration of the TextField
@@ -292,8 +293,9 @@ class _NumericIntryState extends State<NumericIntry> {
     // Parse the text from the text controller and convert it to Latin digits
     var digits = _textController.text.toLatin();
 
-    // Parse the digits as an integer
-    var value = double.parse(digits);
+    // Parse and evaluate the digits as an integer
+    var node = MathNodeExpression.fromString(digits);
+    var value = node.calc(MathVariableValues.none).toDouble();
 
     // Divide the value by the number of divisions
     value = _divide(value).toDouble();
