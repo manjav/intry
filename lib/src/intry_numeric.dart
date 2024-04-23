@@ -305,17 +305,6 @@ class _NumericIntryState extends State<NumericIntry> {
     widget.onChanged(_clamp(value));
   }
 
-  /// Selects all the text in the text controller.
-  ///
-  /// This method is useful for implementing a "select all" functionality.
-  Future<void> _selectAll() async {
-    // Set the text selection to select all the text in the text controller.
-    _textController.selection = TextSelection(
-      baseOffset: 0,
-      extentOffset: _textController.value.text.length,
-    );
-  }
-
   /// Slide the value by a given amount.
   ///
   /// If the state is set to IntryState.editting, this function does nothing.
