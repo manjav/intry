@@ -24,6 +24,8 @@ class NumericIntry extends StatefulWidget {
   /// The number of divisions for the numeric input.
   final int divisions;
 
+  final double mouseSpeed;
+
   /// The postfix for the numeric input.
   final String postfix;
 
@@ -79,6 +81,7 @@ class NumericIntry extends StatefulWidget {
     this.max,
     this.postfix = "",
     this.divisions = 1,
+    this.mouseSpeed = 0.2,
     this.enabled,
     this.decoration,
     this.mouseCursor,
@@ -107,7 +110,7 @@ class _NumericIntryState extends State<NumericIntry> {
   double _startPosition = 0;
 
   /// Initial value of the widget
-  int _startValue = 0;
+  double _startValue = 0;
 
   /// Flag to indicate if the widget is being hovered over
   bool _isHover = false;
@@ -307,7 +310,8 @@ class _NumericIntryState extends State<NumericIntry> {
     }
 
     // Calculate the new value
-    var newValue = _divide(_startValue + (position / 5)).round();
+    var newValue =
+        _divide(_startValue + (position * widget.mouseSpeed)).roundToDouble();
 
     // Ensure the new value is between `widget.min` and `widget.max`, if they are set
     var clampedValue = _clamp(newValue);
