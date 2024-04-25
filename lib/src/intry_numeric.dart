@@ -34,12 +34,12 @@ class NumericIntry extends StatefulWidget {
 
   /// Represents the speed at which the animation progresses.
   /// The value should be a number greater than 0.
-  /// A higher value indicates faster animation.
+  /// A higher value indicates faster changes.
   ///
   /// Type: double
   ///
   /// Default: 0.2
-  final double changeSpeed;
+  final double slidingSpeed;
 
   /// Represents the number of decimal places to round the fraction.
   /// The value should be a non-negative integer.
@@ -110,10 +110,10 @@ class NumericIntry extends StatefulWidget {
     this.postfix = "",
     this.divisions = 1,
     this.fractionDigits = 0,
-    this.changeSpeed = 0.2,
-    this.enabled,
-    this.decoration,
+    this.slidingSpeed = 0.2,
     this.mouseCursor,
+    this.decoration,
+    this.enabled,
     required this.value,
     required this.onChanged,
   });
@@ -348,7 +348,7 @@ class _NumericIntryState extends State<NumericIntry> {
 
     // Calculate the new value
     var newValue =
-        _divide(_startValue + (position * widget.changeSpeed)).roundToDouble();
+        _divide(_startValue + (position * widget.slidingSpeed)).roundToDouble();
 
     // Ensure the new value is between `widget.min` and `widget.max`, if they are set
     var clampedValue = _clamp(newValue);
