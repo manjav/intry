@@ -41,6 +41,13 @@ class NumericIntry extends StatefulWidget {
   /// Default: 0.2
   final double slidingSpeed;
 
+  /// The direction in which the value can be slid.
+  ///
+  /// Possible values are [Axis.horizontal] and [Axis.vertical].
+  ///
+  /// Default: Axis.vertical
+  final Axis slidingDirection;
+
   /// Represents the number of decimal places to round the fraction.
   /// The value should be a non-negative integer.
   /// A higher value indicates more decimal places to round.
@@ -111,6 +118,7 @@ class NumericIntry extends StatefulWidget {
     this.divisions = 1,
     this.fractionDigits = 0,
     this.slidingSpeed = 0.2,
+    this.slidingDirection = Axis.vertical,
     this.mouseCursor,
     this.decoration,
     this.enabled,
@@ -229,12 +237,28 @@ class _NumericIntryState extends State<NumericIntry> {
     // If not, it returns a GestureDetector wrapping the child
     return GestureDetector(
       onDoubleTap: () => setState(() => _isTextEditting = true),
-      onHorizontalDragStart: (details) {
-        _startValue = widget.value;
-        _startPosition = details.globalPosition.dx;
+      onVerticalDragStart: (details) {
+        if (widget.slidingDirection == Axis.vertical) {
+          _startValue = widget.value;
+          _startPosition = details.globalPosition.dy;
+        }
       },
-      onHorizontalDragUpdate: (details) =>
-          _slideValue(details.globalPosition.dx - _startPosition),
+      onHorizontalDragStart: (details) {
+        if (widget.slidingDirection == Axis.horizontal) {
+          _startValue = widget.value;
+          _startPosition = details.globalPosition.dx;
+        }
+      },
+      onVerticalDragUpdate: (details) {
+        if (widget.slidingDirection == Axis.vertical) {
+          _slideValue(_startPosition - details.globalPosition.dy);
+        }
+      },
+      onHorizontalDragUpdate: (details) {
+        if (widget.slidingDirection == Axis.horizontal) {
+          _slideValue(_startPosition - details.globalPosition.dx);
+        }
+      },
       child: child,
     );
   }
@@ -301,7 +325,9 @@ class _NumericIntryState extends State<NumericIntry> {
     return widget.mouseCursor ??
         MaterialStateProperty.resolveWith((states) {
           if (!states.contains(MaterialState.focused)) {
-            return SystemMouseCursors.resizeLeftRight;
+            return widget.slidingDirection == Axis.vertical
+                ? SystemMouseCursors.resizeUpDown
+                : SystemMouseCursors.resizeLeftRight;
           }
           return SystemMouseCursors.basic;
         });
