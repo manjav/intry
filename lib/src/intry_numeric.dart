@@ -70,8 +70,11 @@ class NumericIntry extends StatefulWidget {
   /// Default: ''
   final String postfix;
 
+  /// The callback function that gets called when the text changes.
+  final ValueChanged<String>? onTextChanged;
+
   /// The callback function that gets called when the value changes.
-  final ValueChanged<double> onChanged;
+  final ValueChanged<double>? onNumberChanged;
 
   /// If false the text field is "disabled": it ignores taps and its
   /// [decoration] is rendered in grey.
@@ -112,10 +115,47 @@ class NumericIntry extends StatefulWidget {
   /// the editing position.
   final MaterialStateProperty<MouseCursor?>? mouseCursor;
 
-  /// Creates a widget for a numeric input with the given configurations.
+  /// Initializes the [NumericIntry] widget with the provided parameters.
   ///
-  /// The [value] argument must not be null.
-  /// The [onChanged] argument must not be null.
+  /// The [min] parameter sets the minimum value for the widget. If provided, the
+  /// [value] will be clamped to be greater than or equal to [min].
+  ///
+  /// The [max] parameter sets the maximum value for the widget. If provided, the
+  /// [value] will be clamped to be less than or equal to [max].
+  ///
+  /// The [postfix] parameter sets the postfix string to be appended to the
+  /// displayed value.
+  ///
+  /// The [divisions] parameter sets the number of divisions to be displayed on
+  /// the widget.
+  ///
+  /// The [fractionDigits] parameter sets the number of decimal places to be
+  /// displayed for the value.
+  ///
+  /// The [slidingSpeed] parameter sets the speed at which the value changes
+  /// when sliding the widget.
+  ///
+  /// The [inputType] parameter sets the type of input for the widget. It can be
+  /// either [IntryInputType.number] or [IntryInputType.text].
+  ///
+  /// The [slidingDirection] parameter sets the direction in which the widget
+  /// can be slid. It can be either [Axis.vertical] or [Axis.horizontal].
+  ///
+  /// The [mouseCursor] parameter sets the mouse cursor to be displayed when
+  /// hovering over the widget.
+  ///
+  /// The [decoration] parameter sets the decoration of the widget.
+  ///
+  /// The [enabled] parameter sets whether the widget is enabled or disabled.
+  ///
+  /// The [value] parameter sets the initial value of the widget.
+  ///
+  /// The [onNumberChanged] parameter is a callback function that gets called
+  /// when the value changes. It receives the new value as a [double] parameter.
+  ///
+  /// The [onTextChanged] parameter is a callback function that gets called
+  /// when the value changes. It receives the new value as a [String] parameter.
+  ///
   const NumericIntry({
     super.key,
     this.min,
@@ -130,7 +170,8 @@ class NumericIntry extends StatefulWidget {
     this.decoration,
     this.enabled,
     required this.value,
-    required this.onChanged,
+    this.onNumberChanged,
+    this.onTextChanged,
   });
 
   /// Creates the mutable state for this widget at a given location in the
@@ -198,7 +239,7 @@ class _NumericIntryState extends State<NumericIntry> {
           cursor:
               _mouseCursorStates.resolve(_states) ?? MouseCursor.uncontrolled,
           child: Container(
-            constraints: BoxConstraints.tight(const Size(64, 36)),
+            constraints: BoxConstraints.tight(const Size(64, 32)),
             alignment: Alignment.center,
             decoration: _getEffectiveDecoration(),
             child: _textBuilder(), // Builds the child of the Container
@@ -304,7 +345,7 @@ class _NumericIntryState extends State<NumericIntry> {
         // Allow only Latin and Persian digits
         inputFormatters: widget.inputType == IntryInputType.number
             ? <TextInputFormatter>[
-          FilteringTextInputFormatter.allow(RegExp('[0-9۰-۹*/+-^%()]')),
+                FilteringTextInputFormatter.allow(RegExp('[0-9۰-۹*/+-^%()]')),
               ]
             : null,
 
@@ -362,6 +403,7 @@ class _NumericIntryState extends State<NumericIntry> {
   /// which ensures that the value is between `widget.min` and `widget.max`,
   /// if they are set.
   void _setText() {
+    widget.onTextChanged?.call(_textController.text);
     if (widget.inputType == IntryInputType.text) return;
 
     // Parse the text from the text controller and convert it to Latin digits
@@ -376,7 +418,7 @@ class _NumericIntryState extends State<NumericIntry> {
 
     // Pass the result to the `widget.onChanged` callback, after ensuring
     // it is between `widget.min` and `widget.max`, if they are set.
-    widget.onChanged(_clamp(value));
+    widget.onNumberChanged?.call(_clamp(value));
   }
 
   /// Slide the value by a given amount.
@@ -403,7 +445,7 @@ class _NumericIntryState extends State<NumericIntry> {
     var clampedValue = _clamp(newValue);
 
     // Pass the result to the `widget.onChanged` callback
-    widget.onChanged(clampedValue);
+    widget.onNumberChanged?.call(clampedValue);
   }
 
   /// Divide the given value by the number of divisions and round it to the nearest integer.
