@@ -42,7 +42,7 @@ class NumericIntryDecoration {
           width: states.contains(MaterialState.focused) ? 1.5 : 1.0,
         ),
         borderRadius: const BorderRadius.all(
-          Radius.circular(4.0),
+          Radius.circular(2.0),
         ),
       );
     });
@@ -76,9 +76,9 @@ class NumericIntryDecoration {
     if (states.contains(MaterialState.hovered)) {
       return themeData.brightness == Brightness.light
           ? themeData.unselectedWidgetColor
-          : themeData.cardColor;
+          : themeData.splashColor;
     }
 
-    return themeData.splashColor;
+    return themeData.scaffoldBackgroundColor;
   }
 }
