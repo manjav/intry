@@ -3,6 +3,9 @@ import 'package:flutter/services.dart';
 import 'package:intry/intry.dart';
 import 'package:math_parser/math_parser.dart';
 
+/// Represents the type of input for the [NumericIntry] widget.
+enum IntryInputType { number, text }
+
 /// A library for creating a numeric input widget.
 ///
 /// The [NumericIntry] widget provides a numeric input field with
@@ -13,14 +16,17 @@ import 'package:math_parser/math_parser.dart';
 /// To use this library, import `package:intry_numeric/intry_numeric.dart`.
 
 class NumericIntry extends StatefulWidget {
+  /// The type of input for the numeric input.
+  final IntryInputType inputType;
+
   /// The minimum value for the numeric input.
   final double? min;
 
   /// The maximum value for the numeric input.
   final double? max;
 
-  /// The initial value for the numeric input.
-  final double value;
+  /// The initial value for the  input.
+  final dynamic value;
 
   /// Represents the list of divisions to display.
   /// Each division should be an object with the following properties:
@@ -118,6 +124,7 @@ class NumericIntry extends StatefulWidget {
     this.divisions = 1,
     this.fractionDigits = 0,
     this.slidingSpeed = 0.2,
+    this.inputType = IntryInputType.number,
     this.slidingDirection = Axis.vertical,
     this.mouseCursor,
     this.decoration,
@@ -213,7 +220,7 @@ class _NumericIntryState extends State<NumericIntry> {
   ///   - isHover: A boolean value indicating whether the user is currently
   ///             hovering over the widget.
   void _onHover(bool isHover) {
-    if (_isTextEditting) {
+    if (_isTextEditting || widget.inputType == IntryInputType.text) {
       return;
     }
     setState(() => _isHover = isHover);
@@ -238,24 +245,28 @@ class _NumericIntryState extends State<NumericIntry> {
     return GestureDetector(
       onDoubleTap: () => setState(() => _isTextEditting = true),
       onVerticalDragStart: (details) {
-        if (widget.slidingDirection == Axis.vertical) {
+        if (widget.inputType == IntryInputType.number &&
+            widget.slidingDirection == Axis.vertical) {
           _startValue = widget.value;
           _startPosition = details.globalPosition.dy;
         }
       },
       onHorizontalDragStart: (details) {
-        if (widget.slidingDirection == Axis.horizontal) {
+        if (widget.inputType == IntryInputType.number &&
+            widget.slidingDirection == Axis.horizontal) {
           _startValue = widget.value;
           _startPosition = details.globalPosition.dx;
         }
       },
       onVerticalDragUpdate: (details) {
-        if (widget.slidingDirection == Axis.vertical) {
+        if (widget.inputType == IntryInputType.number &&
+            widget.slidingDirection == Axis.vertical) {
           _slideValue(_startPosition - details.globalPosition.dy);
         }
       },
       onHorizontalDragUpdate: (details) {
-        if (widget.slidingDirection == Axis.horizontal) {
+        if (widget.inputType == IntryInputType.number &&
+            widget.slidingDirection == Axis.horizontal) {
           _slideValue(_startPosition - details.globalPosition.dx);
         }
       },
@@ -270,7 +281,12 @@ class _NumericIntryState extends State<NumericIntry> {
   /// `ValueListenableBuilder` widget that displays the value with
   /// the postfix.
   Widget _textBuilder() {
-    var text = widget.value.toStringAsFixed(widget.fractionDigits);
+    String text = "";
+    if (widget.inputType == IntryInputType.number) {
+      text = widget.value.toStringAsFixed(widget.fractionDigits);
+    } else {
+      text = widget.value.toString();
+    }
     if (_isTextEditting) {
       // Set the TextField's text to the current value
       _textController.text = text;
@@ -286,9 +302,11 @@ class _NumericIntryState extends State<NumericIntry> {
         },
 
         // Allow only Latin and Persian digits
-        inputFormatters: <TextInputFormatter>[
+        inputFormatters: widget.inputType == IntryInputType.number
+            ? <TextInputFormatter>[
           FilteringTextInputFormatter.allow(RegExp('[0-9۰-۹*/+-^%()]')),
-        ],
+              ]
+            : null,
 
         // Set blank decoration of the TextField
         decoration: const InputDecoration(
@@ -325,6 +343,9 @@ class _NumericIntryState extends State<NumericIntry> {
     return widget.mouseCursor ??
         MaterialStateProperty.resolveWith((states) {
           if (!states.contains(MaterialState.focused)) {
+            if (widget.inputType == IntryInputType.text) {
+              return SystemMouseCursors.text;
+            }
             return widget.slidingDirection == Axis.vertical
                 ? SystemMouseCursors.resizeUpDown
                 : SystemMouseCursors.resizeLeftRight;
@@ -341,6 +362,8 @@ class _NumericIntryState extends State<NumericIntry> {
   /// which ensures that the value is between `widget.min` and `widget.max`,
   /// if they are set.
   void _setText() {
+    if (widget.inputType == IntryInputType.text) return;
+
     // Parse the text from the text controller and convert it to Latin digits
     var digits = _textController.text.toLatin();
 
