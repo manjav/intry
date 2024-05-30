@@ -13,3 +13,4 @@ library intry;
 
 export 'src/intry_numeric.dart';
 export 'src/theme/intry_numeric_decoration.dart';
+export 'src/utils/utils.dart';

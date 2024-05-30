@@ -17,11 +17,11 @@ For detailed installation instructions, refer to the [installation guide](https:
 To use this library, import `package:intry_numeric/intry_numeric.dart`.
 
 ``` dart
-int _integerValue = 0;
+double _integerValue = 0.0;
 
 NumericIntry(
-    min: 0,
-    max: 100,
+    min: 0.0,
+    max: 100.0,
     divisions: 5,
     postfix: "%",
     value: _integerValue,

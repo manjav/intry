@@ -414,11 +414,15 @@ class _NumericIntryState extends State<NumericIntry> {
     var value = node.calc(MathVariableValues.none).toDouble();
 
     // Divide the value by the number of divisions
-    value = _divide(value).toDouble();
+    value = Utils.divide(value, divisions: widget.divisions).toDouble();
 
     // Pass the result to the `widget.onChanged` callback, after ensuring
     // it is between `widget.min` and `widget.max`, if they are set.
-    widget.onNumberChanged?.call(_clamp(value));
+    widget.onNumberChanged?.call(Utils.clamp(
+      value,
+      min: widget.min,
+      max: widget.max,
+    ));
   }
 
   /// Slide the value by a given amount.
@@ -438,65 +442,19 @@ class _NumericIntryState extends State<NumericIntry> {
     }
 
     // Calculate the new value
-    var newValue =
-        _divide(_startValue + (position * widget.slidingSpeed)).roundToDouble();
+    var newValue = Utils.divide(_startValue + (position * widget.slidingSpeed),
+            divisions: widget.divisions ?? 1)
+        .roundToDouble();
 
     // Ensure the new value is between `widget.min` and `widget.max`, if they are set
-    var clampedValue = _clamp(newValue);
+    var clampedValue = Utils.clamp(
+      newValue,
+      min: widget.min,
+      max: widget.max,
+    );
 
     // Pass the result to the `widget.onChanged` callback
     widget.onNumberChanged?.call(clampedValue);
-  }
-
-  /// Divide the given value by the number of divisions and round it to the nearest integer.
-  /// Then, multiply the result by the number of divisions.
-  ///
-  /// This function is used to ensure that the value is a multiple of the number of divisions.
-  ///
-  /// Parameters:
-  ///   - value: The value to divide.
-  ///
-  /// Returns:
-  ///   - The value divided by the number of divisions, rounded to the nearest number,
-  ///     then multiplied by the number of divisions.
-  ///
-  /// Example:
-  ///   If the number of divisions is 10 and the value is 12.5, the result would be 10.
-  ///   If the number of divisions is 10 and the value is 17, the result would be 20.
-  num _divide(num value) {
-    // Divide the given value by the number of divisions and round it to the nearest number
-    var dividedValue = value / widget.divisions;
-    var roundedValue = dividedValue.round();
-    return roundedValue * widget.divisions;
-  }
-
-  /// Clamps the given value to the range defined by `widget.min` and `widget.max`.
-  ///
-  /// If `widget.min` is not null and `value` is less than `widget.min`,
-  /// the function sets `value` to `widget.min`.
-  /// If `widget.max` is not null and `value` is greater than `widget.max`,
-  /// the function sets `value` to `widget.max`.
-  ///
-  /// Parameters:
-  ///   - value: The value to be clamped.
-  ///
-  /// Returns:
-  ///   - The clamped value.
-  double _clamp(double value) {
-    // Clamp the value to the range defined by `widget.min` and `widget.max`.
-    // If `widget.min` is not null and `value` is less than `widget.min`,
-    // set `value` to `widget.min`.
-    if (widget.min != null && value < widget.min!) {
-      value = widget.min!;
-    }
-
-    // If `widget.max` is not null and `value` is greater than `widget.max`,
-    // set `value` to `widget.max`.
-    if (widget.max != null && value > widget.max!) {
-      value = widget.max!;
-    }
-
-    return value;
   }
 }
 
