@@ -5,22 +5,23 @@ class Utils {
   /// This function is used to ensure that the value is a multiple of the number of divisions.
   ///
   /// Parameters:
-  ///   - value: The value to divide.
+  ///   - value: The value to divide. (Type: num)
+  ///   - divisions: The number of divisions. (Type: num)
   ///
   /// Returns:
   ///   - The value divided by the number of divisions, rounded to the nearest number,
-  ///     then multiplied by the number of divisions.
+  ///     then multiplied by the number of divisions. (Type: num)
   ///
   /// Example:
   ///   If the number of divisions is 10 and the value is 12.5, the result would be 10.
   ///   If the number of divisions is 10 and the value is 17, the result would be 20.
   static num divide(
     num value, {
-    int divisions = 1,
+    int divisions = 0,
   }) {
     // Divide the given value by the number of divisions and round it to the nearest number
-    if (divisions < 1) {
-      divisions = 1;
+    if (divisions <= 0) {
+      return value;
     }
     var dividedValue = value / divisions;
     var roundedValue = dividedValue.round();

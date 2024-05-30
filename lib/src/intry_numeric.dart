@@ -443,7 +443,7 @@ class _NumericIntryState extends State<NumericIntry> {
 
     // Calculate the new value
     var newValue = Utils.divide(_startValue + (position * widget.slidingSpeed),
-            divisions: widget.divisions ?? 1)
+            divisions: widget.divisions)
         .roundToDouble();
 
     // Ensure the new value is between `widget.min` and `widget.max`, if they are set
@@ -455,41 +455,5 @@ class _NumericIntryState extends State<NumericIntry> {
 
     // Pass the result to the `widget.onChanged` callback
     widget.onNumberChanged?.call(clampedValue);
-  }
-}
-
-/// Converts this string, which contains Persian digits, to a string with Latin digits.
-extension ToLatinExtension on String {
-  /// Converts this string, which contains Persian digits, to a string with Latin digits.
-  ///
-  /// The function uses a map to replace Persian digits with Latin digits.
-  /// The map is defined as a constant inside the extension function.
-  ///
-  /// Returns:
-  ///   - A new string with Latin digits.
-  String toLatin() {
-    // The map is a constant that maps Persian digits to Latin digits.
-    const Map<String, String> numbers = {
-      '۰': '0',
-      '۱': '1',
-      '۲': '2',
-      '۳': '3',
-      '۴': '4',
-      '۵': '5',
-      '۶': '6',
-      '۷': '7',
-      '۸': '8',
-      '۹': '9',
-    };
-
-    // The `replaceAllMapped` method replaces all occurrences of Persian digits
-    // with the corresponding Latin digits. The RegExp pattern `[۰-۹]` matches
-    // any Persian digit. The function passed to `replaceAllMapped` as the
-    // second argument retrieves the matched Persian digit and returns the
-    // corresponding Latin digit from the `numbers` map.
-    return replaceAllMapped(
-      RegExp('[۰-۹]'),
-      (match) => numbers[this[match.start]]!,
-    );
   }
 }
