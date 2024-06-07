@@ -11,7 +11,7 @@
 
 library intry;
 
-export 'src/intry_basic.dart';
-export 'src/intry_numeric.dart';
+export 'src/intry_basic_field.dart';
+export 'src/intry_numeric_field.dart';
 export 'src/theme/intry_numeric_decoration.dart';
 export 'src/utils/utils.dart';

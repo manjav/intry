@@ -5,14 +5,14 @@ import 'package:math_parser/math_parser.dart';
 
 /// A library for creating a numeric input widget.
 ///
-/// The [NumericIntry] widget provides a numeric input field with
+/// The [IntryNumericField] widget provides a numeric input field with
 /// configurable minimum and maximum values, initial value,
 /// number of divisions, and postfix. It also provides a callback
 /// function that gets called when the value changes.
 ///
 /// To use this library, import `package:intry_numeric/intry_numeric.dart`.
 
-class NumericIntry extends BasicIntry {
+class IntryNumericField extends IntryBasicField {
   /// The minimum value for the numeric input.
   final double? min;
 
@@ -60,7 +60,7 @@ class NumericIntry extends BasicIntry {
   /// The callback function that gets called when the value changes.
   final ValueChanged<double>? onChanged;
 
-  /// Initializes the [NumericIntry] widget with the provided parameters.
+  /// Initializes the [IntryNumericField] widget with the provided parameters.
   ///
   /// The [min] parameter sets the minimum value for the widget. If provided, the
   /// [value] will be clamped to be greater than or equal to [min].
@@ -94,8 +94,8 @@ class NumericIntry extends BasicIntry {
   /// The [onChanged] parameter is a callback function that gets called
   /// when the value changes. It receives the new value as a [double] parameter.
 
-  ///
-  const NumericIntry({
+  /// Constructs a [IntryNumericField] widget with the given parameters.
+  const IntryNumericField({
     super.key,
     super.formatter,
     super.mouseCursor,
@@ -113,7 +113,7 @@ class NumericIntry extends BasicIntry {
 
   /// Creates the mutable state for this widget at a given location in the
   @override
-  BasicIntryState<BasicIntry> createState() => _NumericIntryState();
+  IntryBasicFieldState<IntryNumericField> createState() => _NumericIntryState();
 }
 
 /// `_NumericIntryState` is a state class for the NumericEntry widget.
@@ -121,7 +121,7 @@ class NumericIntry extends BasicIntry {
 /// It manages the state of the NumericEntry widget, including the current value
 /// and whether the widget is currently focused. It provides methods to update
 /// the value and handle user input.
-class _NumericIntryState extends BasicIntryState<NumericIntry> {
+class _NumericIntryState extends IntryBasicFieldState<IntryNumericField> {
   /// Initial position of the widget
   double _startPosition = 0;
 
@@ -191,13 +191,6 @@ class _NumericIntryState extends BasicIntryState<NumericIntry> {
     );
   }
 
-  /// Parses the text from the text controller, converts it to Latin digits,
-  /// converts it to an integer, divides it by the number of divisions, and
-  /// passes the result to the `widget.onChanged` callback.
-  ///
-  /// The `widget.onChanged` callback is called with the result of `_clamp`,
-  /// which ensures that the value is between `widget.min` and `widget.max`,
-  /// if they are set.
   @override
   void setText() {
     // Parse the text from the text controller and convert it to Latin digits

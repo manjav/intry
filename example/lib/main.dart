@@ -29,7 +29,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  double _value = 0;
+  double _numericValue = 10;
 
   @override
   Widget build(BuildContext context) {
@@ -39,21 +39,25 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       body: Container(
         alignment: Alignment.center,
-        child: Row(
+        child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            NumericIntry(
+
+            const Text("IntryNumericField"),
+            const SizedBox(height: 10),
+            Text(
+              'Min: 0\nMax: 100\nDivision: 5\nFormatter: "%sMB"\nValue: $_numericValue',
+              style: Theme.of(context).textTheme.labelSmall,
+            ),
+            const SizedBox(height: 20),
+            IntryNumericField(
               min: 0,
               max: 100,
               divisions: 5,
               formatter: "%sMB",
-              value: _value,
-              onChanged: (double value) => setState(() => _value = value),
-            ),
-            const SizedBox(width: 30),
-            Text(
-              'Min: 0\nMax: 100\nDivision: 5\nFormatter: "\%sMB"\nValue: $_value',
-              style: Theme.of(context).textTheme.titleSmall,
+              value: _numericValue,
+              onChanged: (double value) =>
+                  setState(() => _numericValue = value),
             ),
           ],
         ),

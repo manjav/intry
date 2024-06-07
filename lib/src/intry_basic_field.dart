@@ -4,14 +4,14 @@ import 'package:intry/intry.dart';
 
 /// A library for creating a numeric input widget.
 ///
-/// The [BasicIntry] widget provides a numeric input field with
+/// The [IntryBasicField] widget provides a numeric input field with
 /// configurable minimum and maximum values, initial value,
 /// number of divisions, and postfix. It also provides a callback
 /// function that gets called when the value changes.
 ///
 /// To use this library, import `package:intry_numeric/intry_numeric.dart`.
 
-class BasicIntry extends StatefulWidget {
+class IntryBasicField extends StatefulWidget {
   /// A string used to format the text displayed in the text field.
   ///
   /// The string should contain a "%s" placeholder which will be replaced
@@ -59,7 +59,7 @@ class BasicIntry extends StatefulWidget {
   /// the editing position.
   final MaterialStateProperty<MouseCursor?>? mouseCursor;
 
-  /// Initializes the [BasicIntry] widget with the provided parameters.
+  /// Initializes the [IntryBasicField] widget with the provided parameters.
   /// The [formatter] parameter sets the postfix string to be appended to the
   /// displayed value.
   /// The [mouseCursor] parameter sets the mouse cursor to be displayed when
@@ -69,7 +69,7 @@ class BasicIntry extends StatefulWidget {
   ///
   /// The [enabled] parameter sets whether the widget is enabled or disabled.
   ///
-  const BasicIntry({
+  const IntryBasicField({
     super.key,
     this.formatter = "%s",
     this.mouseCursor,
@@ -79,7 +79,7 @@ class BasicIntry extends StatefulWidget {
 
   /// Creates the mutable state for this widget at a given location in the
   @override
-  State<BasicIntry> createState() => BasicIntryState();
+  State<IntryBasicField> createState() => IntryBasicFieldState();
 }
 
 /// `_BasicIntryState` is a state class for the NumericEntry widget.
@@ -87,7 +87,7 @@ class BasicIntry extends StatefulWidget {
 /// It manages the state of the NumericEntry widget, including the current value
 /// and whether the widget is currently focused. It provides methods to update
 /// the value and handle user input.
-class BasicIntryState<T extends BasicIntry> extends State<T> {
+class IntryBasicFieldState<T extends IntryBasicField> extends State<T> {
   /// Controller for managing the text input in the widget
   final TextEditingController textController = TextEditingController();
 
@@ -134,7 +134,7 @@ class BasicIntryState<T extends BasicIntry> extends State<T> {
           onEnter: (event) => onHover(true),
           onExit: (event) => onHover(false),
           cursor:
-              _mouseCursorStates.resolve(_states) ?? MouseCursor.uncontrolled,
+              mouseCursorStates.resolve(_states) ?? MouseCursor.uncontrolled,
           child: Container(
             constraints: BoxConstraints.tight(const Size(64, 32)),
             alignment: Alignment.center,
@@ -169,7 +169,6 @@ class BasicIntryState<T extends BasicIntry> extends State<T> {
   ///
   /// Parameters:
   ///   - child: The child widget to wrap with a GestureDetector.
-  Widget gestureDetector({required child}) => child;
 
   /// Builds the text input widget.
   ///
@@ -228,7 +227,6 @@ class BasicIntryState<T extends BasicIntry> extends State<T> {
     return stateDecorator.resolve(_states);
   }
 
-  MaterialStateProperty<MouseCursor?> get _mouseCursorStates {
     return widget.mouseCursor ??
         MaterialStateProperty.resolveWith((states) {
           if (!states.contains(MaterialState.focused)) {
@@ -245,7 +243,4 @@ class BasicIntryState<T extends BasicIntry> extends State<T> {
   /// The `widget.onChanged` callback is called with the result of `_clamp`,
   /// which ensures that the value is between `widget.min` and `widget.max`,
   /// if they are set.
-  void setText() {
-    // widget.onTextChanged?.call(_textController.text);
-  }
 }
