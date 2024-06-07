@@ -3,9 +3,6 @@ import 'package:flutter/services.dart';
 import 'package:intry/intry.dart';
 import 'package:math_parser/math_parser.dart';
 
-/// Represents the type of input for the [NumericIntry] widget.
-enum IntryInputType { number, text }
-
 /// A library for creating a numeric input widget.
 ///
 /// The [NumericIntry] widget provides a numeric input field with
@@ -15,18 +12,15 @@ enum IntryInputType { number, text }
 ///
 /// To use this library, import `package:intry_numeric/intry_numeric.dart`.
 
-class NumericIntry extends StatefulWidget {
-  /// The type of input for the numeric input.
-  final IntryInputType inputType;
-
+class NumericIntry extends BasicIntry {
   /// The minimum value for the numeric input.
   final double? min;
 
   /// The maximum value for the numeric input.
   final double? max;
 
-  /// The initial value for the  input.
-  final dynamic value;
+  /// The initial value for the input.
+  final double value;
 
   /// Represents the list of divisions to display.
   /// Each division should be an object with the following properties:
@@ -63,57 +57,8 @@ class NumericIntry extends StatefulWidget {
   /// Default: 0
   final int fractionDigits;
 
-  /// Represents the postfix to display after the value.
-  ///
-  /// Type: String
-  ///
-  /// Default: ''
-  final String postfix;
-
-  /// The callback function that gets called when the text changes.
-  final ValueChanged<String>? onTextChanged;
-
   /// The callback function that gets called when the value changes.
-  final ValueChanged<double>? onNumberChanged;
-
-  /// If false the text field is "disabled": it ignores taps and its
-  /// [decoration] is rendered in grey.
-  ///
-  /// If non-null this property overrides the [decoration]'s
-  /// [InputDecoration.enabled] property.
-  final bool? enabled;
-
-  /// The decoration to show around the text field.
-  ///
-  /// By default, draws a horizontal line under the text field but can be
-  /// configured to show an icon, label, hint text, and error text.
-  ///
-  /// Specify null to remove the decoration entirely (including the
-  /// extra padding introduced by the decoration to save space for the labels).
-  /// [MaterialStateProperty.resolve] is used for the following [MaterialState]s:
-  ///
-  ///  * [MaterialState.hovered] => Hover state.
-  ///  * [MaterialState.focused] => Text edittig state.
-  ///  * [MaterialState.disabled] => Disabled state.
-  final MaterialStateProperty<Decoration?>? decoration;
-
-  /// The cursor for a mouse pointer when it enters or is hovering over the
-  /// widget. (COMMING SOON)
-  ///
-  /// If [mouseCursor] is a [MaterialStateProperty<MouseCursor>],
-  /// [MaterialStateProperty.resolve] is used for the following [MaterialState]s:
-  ///
-  ///  * [MaterialState.hovered] => Hover state.
-  ///  * [MaterialState.focused] => Text edittig state.
-  ///  * [MaterialState.disabled] => Disabled state.
-  ///
-  /// If this property is null, [MaterialStateMouseCursor.clickable] will be used.
-  ///
-  /// The [mouseCursor] is the only property of [TextField] that controls the
-  /// appearance of the mouse pointer. All other properties related to "cursor"
-  /// stand for the text cursor, which is usually a blinking vertical line at
-  /// the editing position.
-  final MaterialStateProperty<MouseCursor?>? mouseCursor;
+  final ValueChanged<double>? onChanged;
 
   /// Initializes the [NumericIntry] widget with the provided parameters.
   ///
@@ -135,9 +80,6 @@ class NumericIntry extends StatefulWidget {
   /// The [slidingSpeed] parameter sets the speed at which the value changes
   /// when sliding the widget.
   ///
-  /// The [inputType] parameter sets the type of input for the widget. It can be
-  /// either [IntryInputType.number] or [IntryInputType.text].
-  ///
   /// The [slidingDirection] parameter sets the direction in which the widget
   /// can be slid. It can be either [Axis.vertical] or [Axis.horizontal].
   ///
@@ -150,33 +92,29 @@ class NumericIntry extends StatefulWidget {
   ///
   /// The [value] parameter sets the initial value of the widget.
   ///
-  /// The [onNumberChanged] parameter is a callback function that gets called
+  /// The [onChanged] parameter is a callback function that gets called
   /// when the value changes. It receives the new value as a [double] parameter.
-  ///
-  /// The [onTextChanged] parameter is a callback function that gets called
-  /// when the value changes. It receives the new value as a [String] parameter.
+
   ///
   const NumericIntry({
     super.key,
+    super.postfix,
+    super.mouseCursor,
+    super.decoration,
+    super.enabled,
     this.min,
     this.max,
-    this.postfix = "",
     this.divisions = 1,
     this.fractionDigits = 0,
     this.slidingSpeed = 0.2,
-    this.inputType = IntryInputType.number,
     this.slidingDirection = Axis.vertical,
-    this.mouseCursor,
-    this.decoration,
-    this.enabled,
     required this.value,
-    this.onNumberChanged,
-    this.onTextChanged,
-  });
+    required this.onChanged,
+  }) : super();
 
   /// Creates the mutable state for this widget at a given location in the
   @override
-  State<NumericIntry> createState() => _NumericIntryState();
+  BasicIntryState<BasicIntry> createState() => _NumericIntryState();
 }
 
 /// `_NumericIntryState` is a state class for the NumericEntry widget.
@@ -184,88 +122,12 @@ class NumericIntry extends StatefulWidget {
 /// It manages the state of the NumericEntry widget, including the current value
 /// and whether the widget is currently focused. It provides methods to update
 /// the value and handle user input.
-class _NumericIntryState extends State<NumericIntry> {
-  /// Controller for managing the text input in the widget
-  final TextEditingController _textController = TextEditingController();
-
-  /// Focus node for handling focus in the widget
-  final FocusNode _focusNode = FocusNode();
-
+class _NumericIntryState extends BasicIntryState<NumericIntry> {
   /// Initial position of the widget
   double _startPosition = 0;
 
   /// Initial value of the widget
   double _startValue = 0;
-
-  /// Flag to indicate if the widget is being hovered over
-  bool _isHover = false;
-
-  /// Flag to indicate if the widget is currently in edit mode
-  bool _isTextEditting = false;
-
-  /// Flag to indicate if the widget is enabled or disabled.
-  ///
-  /// If [widget.enabled] is not null, it is used as the value of this field.
-  /// Otherwise, it is set to `true` by default.
-  ///
-  /// This field determines whether the widget is enabled or disabled. It is
-  /// used to control the user interaction with the widget, such as allowing
-  /// or disallowing input and changing the appearance based on the state.
-  bool get _isEnabled => widget.enabled ?? true;
-
-  /// Returns a set of [MaterialState]s representing the current state of the widget.
-  Set<MaterialState> get _states => <MaterialState>{
-        if (!_isEnabled) MaterialState.disabled,
-        if (_isHover) MaterialState.hovered,
-        if (_isTextEditting) MaterialState.focused,
-      };
-
-  /// Builds the widget tree for this state.
-  /// Returns a `Widget` that represents the widget tree built in this method.
-  @override
-  Widget build(BuildContext context) {
-    // Builds the widget tree
-    return TapRegion(
-      onTapOutside: (e) {
-        if (_isTextEditting) {
-          _setText();
-          setState(() => _isTextEditting = false);
-        }
-      },
-      child: _gestureDetector(
-        child: MouseRegion(
-          onEnter: (event) => _onHover(true),
-          onExit: (event) => _onHover(false),
-          cursor:
-              _mouseCursorStates.resolve(_states) ?? MouseCursor.uncontrolled,
-          child: Container(
-            constraints: BoxConstraints.tight(const Size(64, 32)),
-            alignment: Alignment.center,
-            decoration: _getEffectiveDecoration(),
-            child: _textBuilder(), // Builds the child of the Container
-          ),
-        ),
-      ),
-    );
-  }
-
-  /// Handles the hover event by updating the state of the widget.
-  ///
-  /// This function is called when the user hovers over the widget. It takes a
-  /// parameter [isHover] which indicates whether the user is currently hovering
-  /// over the widget. If the widget is currently in text editing mode, the function
-  /// returns without updating the state. Otherwise, it updates the state of the
-  /// widget by setting the [_isHover] property to [isHover].
-  ///
-  /// Parameters:
-  ///   - isHover: A boolean value indicating whether the user is currently
-  ///             hovering over the widget.
-  void _onHover(bool isHover) {
-    if (_isTextEditting || widget.inputType == IntryInputType.text) {
-      return;
-    }
-    setState(() => _isHover = isHover);
-  }
 
   /// Wraps the child with a GestureDetector to detect gestures.
   ///
@@ -277,37 +139,34 @@ class _NumericIntryState extends State<NumericIntry> {
   ///
   /// Parameters:
   ///   - child: The child widget to wrap with a GestureDetector.
-  Widget _gestureDetector({required child}) {
-    if (_isTextEditting) {
+  @override
+  Widget gestureDetector({required child}) {
+    if (isTextEditting) {
       return SizedBox(child: child);
     }
 
     // If not, it returns a GestureDetector wrapping the child
     return GestureDetector(
-      onDoubleTap: () => setState(() => _isTextEditting = true),
+      onDoubleTap: () => setState(() => isTextEditting = true),
       onVerticalDragStart: (details) {
-        if (widget.inputType == IntryInputType.number &&
-            widget.slidingDirection == Axis.vertical) {
+        if (widget.slidingDirection == Axis.vertical) {
           _startValue = widget.value;
           _startPosition = details.globalPosition.dy;
         }
       },
       onHorizontalDragStart: (details) {
-        if (widget.inputType == IntryInputType.number &&
-            widget.slidingDirection == Axis.horizontal) {
+        if (widget.slidingDirection == Axis.horizontal) {
           _startValue = widget.value;
           _startPosition = details.globalPosition.dx;
         }
       },
       onVerticalDragUpdate: (details) {
-        if (widget.inputType == IntryInputType.number &&
-            widget.slidingDirection == Axis.vertical) {
+        if (widget.slidingDirection == Axis.vertical) {
           _slideValue(_startPosition - details.globalPosition.dy);
         }
       },
       onHorizontalDragUpdate: (details) {
-        if (widget.inputType == IntryInputType.number &&
-            widget.slidingDirection == Axis.horizontal) {
+        if (widget.slidingDirection == Axis.horizontal) {
           _slideValue(_startPosition - details.globalPosition.dx);
         }
       },
@@ -321,78 +180,16 @@ class _NumericIntryState extends State<NumericIntry> {
   /// `TextField` widget to edit the value. Otherwise, it returns a
   /// `ValueListenableBuilder` widget that displays the value with
   /// the postfix.
-  Widget _textBuilder() {
-    String text = "";
-    if (widget.inputType == IntryInputType.number) {
-      text = widget.value.toStringAsFixed(widget.fractionDigits);
-    } else {
-      text = widget.value.toString();
-    }
-    if (_isTextEditting) {
-      // Set the TextField's text to the current value
-      _textController.text = text;
-      return TextField(
-        focusNode: _focusNode,
-        controller: _textController,
-        textAlign: TextAlign.center,
-        textAlignVertical: TextAlignVertical.center,
-        keyboardType: TextInputType.number,
-        onSubmitted: (e) {
-          _setText();
-          setState(() => _isTextEditting = false);
-        },
-
-        // Allow only Latin and Persian digits
-        inputFormatters: widget.inputType == IntryInputType.number
-            ? <TextInputFormatter>[
-                FilteringTextInputFormatter.allow(RegExp('[0-9۰-۹*/+-^%()]')),
-              ]
-            : null,
-
-        // Set blank decoration of the TextField
-        decoration: const InputDecoration(
-            contentPadding: EdgeInsets.fromLTRB(0, 0, 0, 16),
-            border: InputBorder.none),
-      );
-    }
-
-    return Text("$text${widget.postfix}");
-  }
-
-  /// Returns the effective decoration based on the current state.
-  ///
-  /// It first creates a set of [MaterialState]s containing the current state.
-  /// Then, it checks if [widget.decoration] is not null. If it is not null,
-  /// it assigns it to [stateDecorator]. Otherwise, it uses the
-  /// [NumericIntryDecoration.underline] constructor to create a default
-  /// underline decoration using the provided [BuildContext].
-  ///
-  /// Finally, it calls the [resolve] method on [stateDecorator] passing the
-  /// set of states to retrieve the effective decoration.
-  ///
-  /// This method is used to determine the decoration to apply to the widget
-  /// based on its current state.
-  ///
-  /// Returns a [Decoration] object representing the effective decoration.
-  Decoration? _getEffectiveDecoration() {
-    final stateDecorator =
-        widget.decoration ?? NumericIntryDecoration.underline(context);
-    return stateDecorator.resolve(_states);
-  }
-
-  MaterialStateProperty<MouseCursor?> get _mouseCursorStates {
-    return widget.mouseCursor ??
-        MaterialStateProperty.resolveWith((states) {
-          if (!states.contains(MaterialState.focused)) {
-            if (widget.inputType == IntryInputType.text) {
-              return SystemMouseCursors.text;
-            }
-            return widget.slidingDirection == Axis.vertical
-                ? SystemMouseCursors.resizeUpDown
-                : SystemMouseCursors.resizeLeftRight;
-          }
-          return SystemMouseCursors.basic;
-        });
+  @override
+  Widget textBuilder(
+      {String? text, List<TextInputFormatter>? inputFormatters}) {
+    text = widget.value.toStringAsFixed(widget.fractionDigits);
+    return super.textBuilder(
+      text: text,
+      inputFormatters: <TextInputFormatter>[
+        FilteringTextInputFormatter.allow(RegExp('[0-9۰-۹*/+-^%()]')),
+      ],
+    );
   }
 
   /// Parses the text from the text controller, converts it to Latin digits,
@@ -402,12 +199,10 @@ class _NumericIntryState extends State<NumericIntry> {
   /// The `widget.onChanged` callback is called with the result of `_clamp`,
   /// which ensures that the value is between `widget.min` and `widget.max`,
   /// if they are set.
-  void _setText() {
-    widget.onTextChanged?.call(_textController.text);
-    if (widget.inputType == IntryInputType.text) return;
-
+  @override
+  void setText() {
     // Parse the text from the text controller and convert it to Latin digits
-    var digits = _textController.text.toLatin();
+    var digits = textController.text.toLatin();
 
     // Parse and evaluate the digits as an integer
     var node = MathNodeExpression.fromString(digits);
@@ -418,7 +213,7 @@ class _NumericIntryState extends State<NumericIntry> {
 
     // Pass the result to the `widget.onChanged` callback, after ensuring
     // it is between `widget.min` and `widget.max`, if they are set.
-    widget.onNumberChanged?.call(Utils.clamp(
+    widget.onChanged?.call(Utils.clamp(
       value,
       min: widget.min,
       max: widget.max,
@@ -437,7 +232,7 @@ class _NumericIntryState extends State<NumericIntry> {
   ///   - position: The amount to slide the value by.
   void _slideValue(double position) {
     // If editing, do nothing
-    if (_isTextEditting) {
+    if (isTextEditting) {
       return;
     }
 
@@ -454,6 +249,6 @@ class _NumericIntryState extends State<NumericIntry> {
     );
 
     // Pass the result to the `widget.onChanged` callback
-    widget.onNumberChanged?.call(clampedValue);
+    widget.onChanged?.call(clampedValue);
   }
 }
