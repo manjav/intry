@@ -12,12 +12,13 @@ import 'package:intry/intry.dart';
 /// To use this library, import `package:intry_numeric/intry_numeric.dart`.
 
 class BasicIntry extends StatefulWidget {
-  /// Represents the postfix to display after the value.
+  /// A string used to format the text displayed in the text field.
   ///
-  /// Type: String
-  ///
-  /// Default: ''
-  final String postfix;
+  /// The string should contain a "%s" placeholder which will be replaced
+  /// with the current value of the text field. For example, if the formatter
+  /// is "%s km" and the current value is 10, the text field will display
+  /// "10 km".
+  final String formatter;
 
   /// If false the text field is "disabled": it ignores taps and its
   /// [decoration] is rendered in grey.
@@ -59,7 +60,7 @@ class BasicIntry extends StatefulWidget {
   final MaterialStateProperty<MouseCursor?>? mouseCursor;
 
   /// Initializes the [BasicIntry] widget with the provided parameters.
-  /// The [postfix] parameter sets the postfix string to be appended to the
+  /// The [formatter] parameter sets the postfix string to be appended to the
   /// displayed value.
   /// The [mouseCursor] parameter sets the mouse cursor to be displayed when
   /// hovering over the widget.
@@ -70,7 +71,7 @@ class BasicIntry extends StatefulWidget {
   ///
   const BasicIntry({
     super.key,
-    this.postfix = "",
+    this.formatter = "%s",
     this.mouseCursor,
     this.decoration,
     this.enabled,
@@ -203,7 +204,7 @@ class BasicIntryState<T extends BasicIntry> extends State<T> {
       );
     }
 
-    return Text("$text${widget.postfix}");
+    return Text(widget.formatter.replaceFirst(RegExp(r'%s'), text));
   }
 
   /// Returns the effective decoration based on the current state.

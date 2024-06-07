@@ -68,8 +68,7 @@ class NumericIntry extends BasicIntry {
   /// The [max] parameter sets the maximum value for the widget. If provided, the
   /// [value] will be clamped to be less than or equal to [max].
   ///
-  /// The [postfix] parameter sets the postfix string to be appended to the
-  /// displayed value.
+  /// The [formatter] is a string used to format the text displayed in the text field.
   ///
   /// The [divisions] parameter sets the number of divisions to be displayed on
   /// the widget.
@@ -98,7 +97,7 @@ class NumericIntry extends BasicIntry {
   ///
   const NumericIntry({
     super.key,
-    super.postfix,
+    super.formatter,
     super.mouseCursor,
     super.decoration,
     super.enabled,
