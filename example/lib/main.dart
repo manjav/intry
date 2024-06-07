@@ -29,6 +29,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  String _textValue = "Test";
   double _numericValue = 10;
 
   @override
@@ -42,7 +43,20 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-
+            const Text("IntryTextField"),
+            const SizedBox(height: 10),
+            Text(
+              'Value: $_textValue\nFormatter: Value: "$_textValue"',
+              style: Theme.of(context).textTheme.labelSmall,
+            ),
+            const SizedBox(height: 20),
+            IntryTextField(
+              value: _textValue,
+              decoration: NumericIntryDecoration.outline(context),
+              // formatter: "Value: %s",
+              onChanged: (String value) => setState(() => _textValue = value),
+            ),
+            const SizedBox(height: 50),
             const Text("IntryNumericField"),
             const SizedBox(height: 10),
             Text(
