@@ -38,7 +38,7 @@ void main() {
         home: Scaffold(
           body: NumericIntry(
             inputType: IntryInputType.number,
-            min: 0,
+            min: -100,
             max: 100,
             value: currentValue,
             onNumberChanged: (value) => currentValue = value,
@@ -55,7 +55,7 @@ void main() {
       // await tester.tap(find.byType(NumericIntry));
       // await tester.pumpAndSettle();
 
-      await tester.drag(intryFinder, const Offset(0, 1000));
+      await tester.drag(intryFinder, const Offset(0, -100));
       await tester.pumpAndSettle();
 
       //ASSERT
