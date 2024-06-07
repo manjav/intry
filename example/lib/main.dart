@@ -29,7 +29,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  String _stringValue = "Hello";
+  double _value = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -43,18 +43,16 @@ class _MyHomePageState extends State<MyHomePage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             NumericIntry(
-              inputType: IntryInputType.text,
               min: 0,
               max: 100,
               divisions: 5,
               postfix: "%",
-              value: _stringValue,
-              onTextChanged: (String value) =>
-                  setState(() => _stringValue = value),
+              value: _value,
+              onChanged: (double value) => setState(() => _value = value),
             ),
             const SizedBox(width: 30),
             Text(
-              'Min: 0\nMax: 100\nDivision: 5\nPostfix: "%"\nValue: $_stringValue',
+              'Min: 0\nMax: 100\nDivision: 5\nPostfix: "%"\nValue: $_value',
               style: Theme.of(context).textTheme.titleSmall,
             ),
           ],
