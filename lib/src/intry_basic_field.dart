@@ -234,7 +234,7 @@ class IntryBasicFieldState<T extends IntryBasicField> extends State<T> {
   /// Returns a [Decoration] object representing the effective decoration.
   Decoration? _getEffectiveDecoration() {
     final stateDecorator =
-        widget.decoration ?? NumericIntryDecoration.underline(context);
+        widget.decoration ?? IntryFieldDecoration.underline(context);
     return stateDecorator.resolve(_states);
   }
 

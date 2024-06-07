@@ -9,7 +9,7 @@ import 'package:flutter/material.dart';
 /// The decorations can be used to draw an underline or an outline around
 /// the widget based on the state of the widget. The color of the underline
 /// or outline can be customized based on the state of the widget.
-class NumericIntryDecoration {
+class IntryFieldDecoration {
   /// Creates a decoration that draws an underline with a customizable width and
   /// color based on the state of the [NumericIntry] widget.
   ///

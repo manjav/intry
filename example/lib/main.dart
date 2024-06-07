@@ -52,7 +52,7 @@ class _MyHomePageState extends State<MyHomePage> {
             const SizedBox(height: 20),
             IntryTextField(
               value: _textValue,
-              decoration: NumericIntryDecoration.outline(context),
+              decoration: IntryFieldDecoration.outline(context),
               // formatter: "Value: %s",
               onChanged: (String value) => setState(() => _textValue = value),
             ),
