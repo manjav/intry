@@ -40,38 +40,48 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       body: Container(
         alignment: Alignment.center,
-        child: Column(
+        child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            const Text("IntryTextField"),
-            const SizedBox(height: 10),
-            Text(
-              'Value: $_textValue\nFormatter: Value: "$_textValue"',
-              style: Theme.of(context).textTheme.labelSmall,
+            Column(
+              children: [
+                const SizedBox(height: 10),
+                const Text("IntryTextField"),
+                const SizedBox(height: 20),
+                IntryTextField(
+                  value: _textValue,
+                  decoration: IntryFieldDecoration.outline(context),
+                  onChanged: (String value) =>
+                      setState(() => _textValue = value),
+                ),
+                const SizedBox(height: 40),
+                Text(
+                  'Value: $_textValue\nValue: "$_textValue"\nDecoration:outline',
+                  style: Theme.of(context).textTheme.labelSmall,
+                ),
+              ],
             ),
-            const SizedBox(height: 20),
-            IntryTextField(
-              value: _textValue,
-              decoration: IntryFieldDecoration.outline(context),
-              // formatter: "Value: %s",
-              onChanged: (String value) => setState(() => _textValue = value),
-            ),
-            const SizedBox(height: 50),
-            const Text("IntryNumericField"),
-            const SizedBox(height: 10),
-            Text(
-              'Min: 0\nMax: 100\nDivision: 5\nFormatter: "%sMB"\nValue: $_numericValue',
-              style: Theme.of(context).textTheme.labelSmall,
-            ),
-            const SizedBox(height: 20),
-            IntryNumericField(
-              min: 0,
-              max: 100,
-              divisions: 5,
-              formatter: "%sMB",
-              value: _numericValue,
-              onChanged: (double value) =>
-                  setState(() => _numericValue = value),
+            const SizedBox(width: 80),
+            Column(
+              children: [
+                const SizedBox(height: 10),
+                const Text("IntryNumericField"),
+                const SizedBox(height: 20),
+                IntryNumericField(
+                  min: 0,
+                  max: 100,
+                  divisions: 5,
+                  formatter: "%sMB",
+                  value: _numericValue,
+                  onChanged: (double value) =>
+                      setState(() => _numericValue = value),
+                ),
+                const SizedBox(height: 40),
+                Text(
+                  'Min: 0\nMax: 100\nDivision: 5\nFormatter: "%sMB"\nValue: $_numericValue',
+                  style: Theme.of(context).textTheme.labelSmall,
+                ),
+              ],
             ),
           ],
         ),
