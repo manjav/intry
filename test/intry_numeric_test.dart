@@ -3,7 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:intry/intry.dart';
 
 void main() {
-  group('NumericIntry with inputType = number', () {
+  group('NumericIntry', () {
     testWidgets(
         'NumericIntry number input test should create with default value',
         (WidgetTester tester) async {
@@ -12,11 +12,10 @@ void main() {
       Widget intryNumber = MaterialApp(
         home: Scaffold(
           body: NumericIntry(
-            inputType: IntryInputType.number,
             min: 0,
             max: 100,
             value: defaultValue,
-            onNumberChanged: (value) => defaultValue = value,
+            onChanged: (value) => defaultValue = value,
           ),
         ),
       );
@@ -37,11 +36,10 @@ void main() {
       Widget intryNumber = MaterialApp(
         home: Scaffold(
           body: NumericIntry(
-            inputType: IntryInputType.number,
             min: -100,
             max: 100,
             value: currentValue,
-            onNumberChanged: (value) => currentValue = value,
+            onChanged: (value) => currentValue = value,
           ),
         ),
       );
