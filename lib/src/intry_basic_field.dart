@@ -238,6 +238,7 @@ class IntryBasicFieldState<T extends IntryBasicField> extends State<T> {
     return stateDecorator.resolve(_states);
   }
 
+  MaterialStateProperty<MouseCursor?> get mouseCursorStates {
     return widget.mouseCursor ??
         MaterialStateProperty.resolveWith((states) {
           if (!states.contains(MaterialState.focused)) {

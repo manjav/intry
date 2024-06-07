@@ -212,6 +212,19 @@ class _NumericIntryState extends IntryBasicFieldState<IntryNumericField> {
     ));
   }
 
+  @override
+  MaterialStateProperty<MouseCursor?> get mouseCursorStates {
+    return widget.mouseCursor ??
+        MaterialStateProperty.resolveWith((states) {
+          if (!states.contains(MaterialState.focused)) {
+            return widget.slidingDirection == Axis.vertical
+                ? SystemMouseCursors.resizeUpDown
+                : SystemMouseCursors.resizeLeftRight;
+          }
+          return SystemMouseCursors.basic;
+        });
+  }
+
   /// Slide the value by a given amount.
   ///
   /// If the state is set to IntryState.editting, this function does nothing.
