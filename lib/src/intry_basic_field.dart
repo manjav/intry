@@ -169,6 +169,17 @@ class IntryBasicFieldState<T extends IntryBasicField> extends State<T> {
   ///
   /// Parameters:
   ///   - child: The child widget to wrap with a GestureDetector.
+  Widget gestureDetector({required child}) {
+    if (isTextEditting) {
+      return child;
+    }
+
+    // If not, it returns a GestureDetector wrapping the child
+    return GestureDetector(
+      onDoubleTap: () => setState(() => isTextEditting = true),
+      child: child,
+    );
+  }
 
   /// Builds the text input widget.
   ///
