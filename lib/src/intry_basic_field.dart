@@ -255,4 +255,5 @@ class IntryBasicFieldState<T extends IntryBasicField> extends State<T> {
   /// The `widget.onChanged` callback is called with the result of `_clamp`,
   /// which ensures that the value is between `widget.min` and `widget.max`,
   /// if they are set.
+  void setText() {}
 }

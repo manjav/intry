@@ -191,6 +191,7 @@ class _NumericIntryState extends IntryBasicFieldState<IntryNumericField> {
     );
   }
 
+  /// Sets the text in the text controller and updates the widget's value.
   @override
   void setText() {
     // Parse the text from the text controller and convert it to Latin digits
