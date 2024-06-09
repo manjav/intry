@@ -3,15 +3,15 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:intry/intry.dart';
 
 void main() {
-  group('NumericIntry', () {
+  group('IntryNumericField', () {
     testWidgets(
-        'NumericIntry number input test should create with default value',
+        'IntryNumericField number input test should create with default value',
         (WidgetTester tester) async {
       //ARRENGE
       double defaultValue = 10;
       Widget intryNumber = MaterialApp(
         home: Scaffold(
-          body: NumericIntry(
+          body: IntryNumericField(
             min: 0,
             max: 100,
             value: defaultValue,
@@ -29,13 +29,13 @@ void main() {
     });
 
     testWidgets(
-        'NumericIntry number input test vertical drag to up should changed the currentValue',
+        'IntryNumericField number input test vertical drag to up should changed the currentValue',
         (WidgetTester tester) async {
       //ARRENGE
       double currentValue = 0;
       Widget intryNumber = MaterialApp(
         home: Scaffold(
-          body: NumericIntry(
+          body: IntryNumericField(
             min: -100,
             max: 100,
             value: currentValue,
@@ -45,12 +45,12 @@ void main() {
       );
       await tester.pumpWidget(intryNumber);
 
-      Finder intryFinder=find.byType(NumericIntry);
+      Finder intryFinder=find.byType(IntryNumericField);
 
       expect(intryFinder, findsOneWidget);
 
       //ACT
-      // await tester.tap(find.byType(NumericIntry));
+      // await tester.tap(find.byType(IntryNumericField));
       // await tester.pumpAndSettle();
 
       await tester.drag(intryFinder, const Offset(0, -100));
