@@ -45,13 +45,9 @@ void main() {
       );
       await tester.pumpWidget(intryNumber);
 
-      Finder intryFinder=find.byType(IntryNumericField);
+      Finder intryFinder = find.byType(IntryNumericField);
 
       expect(intryFinder, findsOneWidget);
-
-      //ACT
-      // await tester.tap(find.byType(IntryNumericField));
-      // await tester.pumpAndSettle();
 
       await tester.drag(intryFinder, const Offset(0, -100));
       await tester.pumpAndSettle();
