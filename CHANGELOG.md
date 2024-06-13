@@ -23,7 +23,8 @@
 
 feature - texxt change support
 
-### 0.3.0 (06/13/2024)
+### 0.3.1 (06/13/2024)
 
+feature - formatter instead of postfix
 enhance - separate numeric and text fields
 enhance - add unit tests and initial widget tests
