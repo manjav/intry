@@ -22,3 +22,8 @@
 ### 0.2.0 (05/23/2024)
 
 feature - texxt change support
+
+### 0.3.0 (06/13/2024)
+
+enhance - separate numeric and text fields
+enhance - add unit tests and initial widget tests
