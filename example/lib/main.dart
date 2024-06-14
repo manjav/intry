@@ -13,7 +13,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Intry Demo',
-      theme: ThemeData.light(),
+      theme: ThemeData.dark(),
       home: const MyHomePage(title: 'Intry Demo'),
     );
   }
@@ -50,13 +50,14 @@ class _MyHomePageState extends State<MyHomePage> {
                 const SizedBox(height: 20),
                 IntryTextField(
                   value: _textValue,
+                  formatter: "«%s»",
                   decoration: IntryFieldDecoration.outline(context),
                   onChanged: (String value) =>
                       setState(() => _textValue = value),
                 ),
                 const SizedBox(height: 40),
                 Text(
-                  'Value: $_textValue\nValue: "$_textValue"\nDecoration:outline',
+                  'Value: "$_textValue"\nFormatter: "«%s»"\nDecoration: Outline',
                   style: Theme.of(context).textTheme.labelSmall,
                 ),
               ],
@@ -78,7 +79,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
                 const SizedBox(height: 40),
                 Text(
-                  'Min: 0\nMax: 100\nDivision: 5\nFormatter: "%sMB"\nValue: $_numericValue',
+                  'Min: 0\nValue: $_numericValue\nMax: 100\nDivision: 5\nFormatter: "%sMB"',
                   style: Theme.of(context).textTheme.labelSmall,
                 ),
               ],
