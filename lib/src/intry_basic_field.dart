@@ -157,7 +157,7 @@ class IntryBasicFieldState<T extends IntryBasicField> extends State<T> {
   /// Parameters:
   ///   - isHover: A boolean value indicating whether the user is currently
   ///             hovering over the widget.
-  void onHover(bool isHover) {}
+  void onHover(bool isHover) => setState(() => this.isHover = isHover);
 
   /// Wraps the child with a GestureDetector to detect gestures.
   ///
