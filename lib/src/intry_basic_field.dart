@@ -136,9 +136,9 @@ class IntryBasicFieldState<T extends IntryBasicField> extends State<T> {
           cursor:
               mouseCursorStates.resolve(_states) ?? MouseCursor.uncontrolled,
           child: Container(
-            constraints: BoxConstraints.tight(const Size(64, 32)),
             alignment: Alignment.center,
             decoration: _getEffectiveDecoration(),
+            constraints: BoxConstraints.tight(const Size(64, 32)),
             child: textBuilder(), // Builds the child of the Container
           ),
         ),
