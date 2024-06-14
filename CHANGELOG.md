@@ -28,3 +28,8 @@ feature - texxt change support
 feature - formatter instead of postfix
 enhance - separate numeric and text fields
 enhance - add unit tests and initial widget tests
+
+### 0.3.2 (06/14/2024)
+
+fixbugs - hover detection bug
+cleanups - update example
