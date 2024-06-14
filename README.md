@@ -38,6 +38,7 @@ String _textValue = "Test";
 
 IntryTextField(
   value: _textValue,
+  formatter: "« %s »",
   decoration: IntryFieldDecoration.outline(context),
   onChanged: (String value) =>
       setState(() => _textValue = value),

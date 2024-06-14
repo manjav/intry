@@ -50,14 +50,14 @@ class _MyHomePageState extends State<MyHomePage> {
                 const SizedBox(height: 20),
                 IntryTextField(
                   value: _textValue,
-                  formatter: "«%s»",
+                  formatter: "« %s »",
                   decoration: IntryFieldDecoration.outline(context),
                   onChanged: (String value) =>
                       setState(() => _textValue = value),
                 ),
                 const SizedBox(height: 40),
                 Text(
-                  'Value: "$_textValue"\nFormatter: "«%s»"\nDecoration: Outline',
+                  'Value: "$_textValue"\nFormatter: "« %s »"\nDecoration: Outline',
                   style: Theme.of(context).textTheme.labelSmall,
                 ),
               ],
